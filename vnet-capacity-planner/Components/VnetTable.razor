@@ -1,14 +1,63 @@
-﻿@using vnet_capacity_planner.Models
+﻿@using System.Net
+@using vnet_capacity_planner.Models
 @inject VnetState VnetState
 
 <Table TItem="VnetSpec" DataSource="@VnetState.VnetSpecs" HidePagination="true">
     <Column Title="Start IP" Field="@context.StartIP">
-        <Input @bind-Value="@context.StartIP" />
+        <input class="ant-input" value="@startIp" @onchange="StartIpChanged" 
+               maxlength=15 @onfocus="StartIpFocus" />
     </Column>
     <Column Title="Address Space" Field="@context.AddressSpace" />
     <Column @bind-Field="@context.AddressCount" />
 </Table>
+@if (showError)
+{
+    <div style="color: #ff4d4f;">
+        <span><Icon Type="close-circle" Theme="fill" />@((MarkupString)errorMessage)</span>
+    </div>
+}
 
 @code {
+    private string startIp = "";
+    private bool showError = false;
+    private string errorMessage = "";
 
+    protected override void OnInitialized()
+    {
+        startIp = VnetState.VnetSpecs[0].StartIP;
+
+        base.OnInitialized();
+    }
+
+    private void StartIpChanged(ChangeEventArgs e)
+    {
+        IPAddress ipAddress = null;
+        bool validIp = IPAddress.TryParse(e.Value?.ToString(), out ipAddress);
+        if (!validIp)
+        {
+            errorMessage = "IP address is not valid.";
+            showError = !validIp;
+            return;
+        }
+
+        IPNetwork network1 = IPNetwork.Parse("10.0.0.0/8");
+        IPNetwork network2 = IPNetwork.Parse("172.16.0.0/12");
+        IPNetwork network3 = IPNetwork.Parse("192.168.0.0/16");
+
+        if (!network1.Contains(ipAddress) && !network2.Contains(ipAddress) && !network3.Contains(ipAddress))
+        {
+            errorMessage = $"IP address is not recommended. " +
+                    $"<a href=\"https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#what-address-ranges-can-i-use-in-my-vnets\" target=\"_blank\">More info</a>";
+            showError = true;
+            return;
+        }
+
+        VnetState.SetVnetStartIp(0, e.Value.ToString());
+    }
+
+    private void StartIpFocus(FocusEventArgs e)
+    {
+        if (showError)
+            showError = false;
+    }
 }

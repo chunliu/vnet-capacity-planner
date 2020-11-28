@@ -23,21 +23,16 @@ namespace vnet_capacity_planner.Models
                     }
             };
 
-            SubnetSpecs = new SubnetSpec[]
-            {
-                new()
-                {
-                    Key = "1",
-                    Name = "Subnet1",
-                    FixedName = false,
-                    StartIP = "10.0.0.0",
-                    Cidr = 29,
-                    FixedCidr = false,
-                    AddressRange = "10.0.0.0 - 10.0.0.7",
-                    AddressCount = 8,
-                    AvailableCount = 3
-                }
-            };
+            SubnetSpecs = Array.Empty<SubnetSpec>();
+        }
+
+        public event Action OnVnetStartIpChange;
+        private void NotifyVnetStartIpChange() => OnVnetStartIpChange?.Invoke();
+        
+        public void SetVnetStartIp(int index, string ip)
+        {
+            VnetSpecs[index].StartIP = ip;
+            NotifyVnetStartIpChange();
         }
     }
 }
