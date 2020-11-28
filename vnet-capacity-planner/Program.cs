@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using vnet_capacity_planner.Models;
 
 namespace vnet_capacity_planner
 {
@@ -20,6 +21,7 @@ namespace vnet_capacity_planner
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             // Add antd
             builder.Services.AddAntDesign();
+            builder.Services.AddSingleton<VnetState>();
 
             await builder.Build().RunAsync();
         }

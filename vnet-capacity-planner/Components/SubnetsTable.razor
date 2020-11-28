@@ -1,0 +1,16 @@
+﻿@using vnet_capacity_planner.Models
+@inject VnetState VnetState
+
+<Button Type="primary" Icon="plus-circle">Add Subnet</Button>
+<p />
+<Table TItem="SubnetSpec" DataSource="@VnetState.SubnetSpecs" HidePagination="true">
+    <Column @bind-Field="@context.Name" />
+    <Column Title="Address Space" Field="@context.AddressSpace" />
+    <Column @bind-Field="@context.AddressRange" />
+    <Column @bind-Field="@context.AddressCount" />
+    <Column @bind-Field="@context.AvailableCount" />
+</Table>
+
+@code {
+
+}

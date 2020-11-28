@@ -1,6 +1,10 @@
 ﻿@page "/"
+@using vnet_capacity_planner.Components
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<Card Title="Virtual Network" Bordered="false">
+    <VnetTable />
+</Card>
+<Card Title="Subnets" Bordered="false">
+    <SubnetsTable />
+</Card>
 

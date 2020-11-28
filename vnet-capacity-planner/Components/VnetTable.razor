@@ -1,0 +1,14 @@
+﻿@using vnet_capacity_planner.Models
+@inject VnetState VnetState
+
+<Table TItem="VnetSpec" DataSource="@VnetState.VnetSpecs" HidePagination="true">
+    <Column Title="Start IP" Field="@context.StartIP">
+        <Input @bind-Value="@context.StartIP" />
+    </Column>
+    <Column Title="Address Space" Field="@context.AddressSpace" />
+    <Column @bind-Field="@context.AddressCount" />
+</Table>
+
+@code {
+
+}
