@@ -18,7 +18,6 @@ namespace vnet_capacity_planner.Models
                     {
                         Key = "1",
                         StartIP = "10.0.0.0",
-                        AddressCount = 8,
                         Cidr = 29
                     }
             };

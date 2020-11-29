@@ -3,12 +3,13 @@
 @inject VnetState VnetState
 
 <Table TItem="VnetSpec" DataSource="@VnetState.VnetSpecs" HidePagination="true">
-    <Column Title="Start IP" Field="@context.StartIP">
+    <Column Title="Network IP" Field="@context.StartIP">
         <input class="ant-input" value="@startIp" @onchange="StartIpChanged" 
                maxlength=15 @onfocus="StartIpFocus" />
     </Column>
     <Column Title="Address Space" Field="@context.AddressSpace" />
-    <Column @bind-Field="@context.AddressCount" />
+    <Column Title="Address Range" Field="@context.AddressRange" />
+    <Column Title="Address Count" Field="@context.AddressCount" />
 </Table>
 @if (showError)
 {
