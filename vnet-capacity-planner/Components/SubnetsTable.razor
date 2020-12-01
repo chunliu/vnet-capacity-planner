@@ -3,7 +3,7 @@
 
 <Button Type="primary" Icon="plus-circle" OnClick="@(() => { modalVisible = true; })">Add Subnet</Button>
 <p />
-<Table TItem="SubnetSpec" DataSource="@VnetState.SubnetSpecs" HidePagination="true">
+<Table TItem="Subnet" DataSource="@VnetState.Vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
     <Column Title="Address Space" Field="@context.AddressSpace" />
     <Column @bind-Field="@context.AddressRange" />
@@ -53,9 +53,9 @@
 @code {
     bool modalVisible = false;
 
-    Form<SubnetSpec> subnetForm;
+    Form<Subnet> subnetForm;
 
-    SubnetSpec subnet = new SubnetSpec();
+    Subnet subnet = new Subnet();
 
     ServiceSpec SelectedService { get; set; }
 

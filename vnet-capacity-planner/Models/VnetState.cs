@@ -7,23 +7,25 @@ namespace vnet_capacity_planner.Models
 {
     public class VnetState
     {
-        public VnetSpec[] VnetSpecs { get; set; }
-        public SubnetSpec[] SubnetSpecs { get; set; }
+        public VirtualNetwork Vnet = new VirtualNetwork();
+
         public List<ServiceSpec> ServiceSpecs { get; set; }
 
         public VnetState()
         {
-            VnetSpecs = new VnetSpec[]
+            Vnet = new VirtualNetwork
             {
+                IPRanges = new IPRange[]
+                {
                     new()
                     {
-                        Key = "1",
                         StartIP = "10.0.0.0",
                         Cidr = 29
                     }
-            };
+                },
 
-            SubnetSpecs = Array.Empty<SubnetSpec>();
+                Subnets = Array.Empty<Subnet>()
+            };
 
             ServiceSpecs = new List<ServiceSpec>
             {
@@ -71,7 +73,7 @@ namespace vnet_capacity_planner.Models
         
         public void SetVnetStartIp(int index, string ip)
         {
-            VnetSpecs[index].StartIP = ip;
+            Vnet.IPRanges[index].StartIP = ip;
             NotifyVnetStartIpChange();
         }
     }

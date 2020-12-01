@@ -16,7 +16,7 @@ namespace vnet_capacity_planner.Models
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var ip = (SubnetSpec)validationContext.ObjectInstance;
+            var ip = (Subnet)validationContext.ObjectInstance;
 
             if (!IPAddress.TryParse(ip.StartIP, out IPAddress ipAddress))
             {

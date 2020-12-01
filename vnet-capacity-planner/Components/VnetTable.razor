@@ -2,7 +2,7 @@
 @using vnet_capacity_planner.Models
 @inject VnetState VnetState
 
-<Table TItem="VnetSpec" DataSource="@VnetState.VnetSpecs" HidePagination="true">
+<Table TItem="IPRange" DataSource="@VnetState.Vnet.IPRanges" HidePagination="true">
     <Column Title="Network IP" Field="@context.StartIP">
         <input class="ant-input" value="@startIp" @onchange="StartIpChanged" 
                maxlength=15 @onfocus="StartIpFocus" />
@@ -23,7 +23,7 @@
 
     protected override void OnInitialized()
     {
-        startIp = VnetState.VnetSpecs[0].StartIP;
+        startIp = VnetState.Vnet.IPRanges[0].StartIP;
 
         base.OnInitialized();
     }
