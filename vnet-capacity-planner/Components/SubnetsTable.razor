@@ -1,7 +1,7 @@
 ﻿@using vnet_capacity_planner.Models
 @inject VnetState VnetState
 
-<Button Type="primary" Icon="plus-circle">Add Subnet</Button>
+<Button Type="primary" Icon="plus-circle" OnClick="@(() => { modalVisible = true; })">Add Subnet</Button>
 <p />
 <Table TItem="SubnetSpec" DataSource="@VnetState.SubnetSpecs" HidePagination="true">
     <Column @bind-Field="@context.Name" />
@@ -11,6 +11,75 @@
     <Column @bind-Field="@context.AvailableCount" />
 </Table>
 
-@code {
+<Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" OkButtonProps="@(new ButtonProps { Disabled = SelectedService == null })">
+    <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 6 }" WrapperCol="new ColLayoutParam { Span = 18 }">
+        <FormItem Label="Service">
+            <Select DataSource="@VnetState.ServiceSpecs" @bind-Value="@context.ServiceName"
+                    ValueName="@nameof(ServiceSpec.Name)" LabelName="@nameof(ServiceSpec.Name)"
+                    OnSelectedItemChanged="HandleOnSelectedItemChanged" />
+        </FormItem>
+        <FormItem Label="Name">
+            <Input @bind-Value="@context.Name" Disabled="@(SelectedService == null ? false : SelectedService.FixedSubnetName)" />
+        </FormItem>
+        <FormItem Label="Start IP">
+            <Input @bind-Value="@context.StartIP" />
+        </FormItem>
+        @if (SelectedService != null && (SelectedService.FixedSubnetCidr || SelectedService.Name == "Other"))
+        {
+            <FormItem Label="CIDR">
+                <Input @bind-Value="@context.Cidr" Disabled="@SelectedService.FixedSubnetCidr" />
+            </FormItem>
+        }
+        else
+        {
+            <FormItem Label="Instances">
+                <Input @bind-Value="@context.ServiceInstances" />
+                @if (SelectedService != null && SelectedService.MaxInstances > SelectedService.MinInstances
+                 && (context.ServiceInstances < SelectedService.MinInstances || context.ServiceInstances > SelectedService.MaxInstances))
+                {
+                    <ValidationError ErrorMessage="@($"Instances must be between {SelectedService.MinInstances} and {SelectedService.MaxInstances}.")" />
+                }
+            </FormItem>
+            <FormItem Label="IP / Instance">
+                <Input @bind-Value="@context.IpPerInstance" Disabled="@(SelectedService == null ? false : SelectedService.IpPerInstance != 0)" />
+            </FormItem>
+            <FormItem Label="Additional IPs">
+                <Input @bind-Value="@context.AdditionalIps" Disabled="@(SelectedService == null ? false : SelectedService.IpPerInstance != 0)" />
+            </FormItem>
+        }
+    </Form>
+</Modal>
 
+@code {
+    bool modalVisible = false;
+
+    Form<SubnetSpec> subnetForm;
+
+    SubnetSpec subnet = new SubnetSpec();
+
+    ServiceSpec SelectedService { get; set; }
+
+    private void HandleOnSelectedItemChanged(ServiceSpec selectedService)
+    {
+        SelectedService = selectedService;
+        subnet.ServiceName = selectedService.Name;
+        subnet.Name = selectedService.SubnetName;
+        subnet.Cidr = selectedService.SubnetCidr;
+        subnet.IpPerInstance = selectedService.IpPerInstance;
+        subnet.AdditionalIps = selectedService.AdditionalIps;
+    }
+
+    private void HandleOk(MouseEventArgs e)
+    {
+        if (!subnetForm.Validate())
+            return;
+
+        
+        //modalVisible = false;
+    }
+
+    private void HandleCancel(MouseEventArgs e)
+    {
+        modalVisible = false;
+    }
 }

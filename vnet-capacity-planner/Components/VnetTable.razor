@@ -13,9 +13,7 @@
 </Table>
 @if (showError)
 {
-    <div style="color: #ff4d4f;">
-        <span><Icon Type="close-circle" Theme="fill" />@((MarkupString)errorMessage)</span>
-    </div>
+    <ValidationError ErrorMessage="@errorMessage" />
 }
 
 @code {

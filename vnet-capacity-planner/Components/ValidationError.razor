@@ -1,0 +1,8 @@
+﻿<div style="color: #ff4d4f;">
+    <span><Icon Type="close-circle" Theme="fill" />@((MarkupString)ErrorMessage)</span>
+</div>
+
+@code {
+    [Parameter]
+    public string ErrorMessage { get; set; }
+}
