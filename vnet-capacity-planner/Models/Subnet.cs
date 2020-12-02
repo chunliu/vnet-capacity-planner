@@ -6,7 +6,6 @@ namespace vnet_capacity_planner.Models
 {
     public class Subnet
     {
-        public string Key { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

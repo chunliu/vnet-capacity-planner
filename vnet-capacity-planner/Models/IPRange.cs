@@ -1,64 +1,47 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 
 namespace vnet_capacity_planner.Models
 {
     public class IPRange
     {
-        public string StartIP { get; set; }
-        private int _cidr = 0;
         private IPNetwork _ipNetwork = null;
+
+        public string StartIP 
+        { 
+            get 
+            { 
+                return _ipNetwork?.Network.ToString() ?? string.Empty; 
+            }
+            set
+            {
+                _ipNetwork = IPNetwork.Parse(value, _ipNetwork?.Cidr ?? Convert.ToByte(29));
+            }
+        }
 
         public string AddressSpace 
         { 
-            get
-            {
-                return string.IsNullOrEmpty(StartIP) ? string.Empty : StartIP + "/" + Cidr.ToString();
-            }
+            get { return _ipNetwork?.ToString() ?? string.Empty; }
         }
 
         public string AddressCount
         {
-            get
-            {
-                if (string.IsNullOrEmpty(StartIP))
-                    return "0";
-
-                if (_ipNetwork == null)
-                    _ipNetwork = IPNetwork.Parse(AddressSpace);
-
-                return _ipNetwork.Total.ToString();
-            }
+            get { return _ipNetwork?.Total.ToString() ?? string.Empty; }
         }
 
         public int Cidr
         {
-            get
-            {
-                return _cidr;
-            }
-            set
-            {
-                if (_cidr != value)
-                {
-                    _cidr = value;
-                    if (!string.IsNullOrEmpty(StartIP))
-                        _ipNetwork = IPNetwork.Parse(AddressSpace);
-                }
-            }
+            get { return _ipNetwork?.Cidr ?? 29; }
         }
 
         public string AddressRange
         {
-            get
-            {
-                if (string.IsNullOrEmpty(StartIP))
-                    return "";
+            get { return _ipNetwork == null ? string.Empty : $"{_ipNetwork.Network} - {_ipNetwork.Broadcast}"; }
+        }
 
-                if (_ipNetwork == null)
-                    _ipNetwork = IPNetwork.Parse(AddressSpace);
-
-                return $"{_ipNetwork.Network} - {_ipNetwork.Broadcast}";
-            }
+        public IPNetwork IPNetwork
+        {
+            get { return _ipNetwork; }
         }
     }
 }

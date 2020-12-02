@@ -1,9 +1,9 @@
 ﻿@using vnet_capacity_planner.Models
-@inject VnetState VnetState
+@inject VirtualNetwork Vnet
 
 <Button Type="primary" Icon="plus-circle" OnClick="@(() => { modalVisible = true; })">Add Subnet</Button>
 <p />
-<Table TItem="Subnet" DataSource="@VnetState.Vnet.Subnets" HidePagination="true">
+<Table TItem="Subnet" DataSource="@Vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
     <Column Title="Address Space" Field="@context.AddressSpace" />
     <Column @bind-Field="@context.AddressRange" />
@@ -14,7 +14,7 @@
 <Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" OkButtonProps="@(new ButtonProps { Disabled = SelectedService == null })">
     <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 6 }" WrapperCol="new ColLayoutParam { Span = 18 }">
         <FormItem Label="Service">
-            <Select DataSource="@VnetState.ServiceSpecs" @bind-Value="@context.ServiceName"
+            <Select DataSource="@Vnet.ServiceSpecs" @bind-Value="@context.ServiceName"
                     ValueName="@nameof(ServiceSpec.Name)" LabelName="@nameof(ServiceSpec.Name)"
                     OnSelectedItemChanged="HandleOnSelectedItemChanged" />
         </FormItem>

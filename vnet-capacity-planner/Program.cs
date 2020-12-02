@@ -21,7 +21,7 @@ namespace vnet_capacity_planner
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             // Add antd
             builder.Services.AddAntDesign();
-            builder.Services.AddSingleton<VnetState>();
+            builder.Services.AddSingleton<VirtualNetwork>();
 
             await builder.Build().RunAsync();
         }
