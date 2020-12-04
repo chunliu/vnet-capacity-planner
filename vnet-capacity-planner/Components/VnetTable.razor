@@ -2,7 +2,7 @@
 @using vnet_capacity_planner.Models
 @inject VirtualNetwork Vnet
 
-<Table TItem="IPRange" DataSource="@Vnet.IPRanges" HidePagination="true">
+<Table @ref="vnetTable" TItem="IPRange" DataSource="@Vnet.IPRanges" HidePagination="true">
     <Column Title="Network IP" Field="@context.StartIP">
         <input class="ant-input" value="@startIp" @onchange="StartIpChanged" 
                maxlength=15 @onfocus="StartIpFocus" />
@@ -21,11 +21,25 @@
     private bool showError = false;
     private string errorMessage = "";
 
+    Table<IPRange> vnetTable;
+
     protected override void OnInitialized()
     {
         startIp = Vnet.IPRanges[0].StartIP;
 
+        Vnet.OnSubnetChange += SubnetHasChanged;
+
         base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        Vnet.OnSubnetChange -= SubnetHasChanged;
+    }
+
+    private void SubnetHasChanged()
+    {
+        vnetTable.ReloadData();
     }
 
     private void StartIpChanged(ChangeEventArgs e)

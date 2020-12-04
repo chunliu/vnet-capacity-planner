@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace vnet_capacity_planner.Models
@@ -8,7 +9,7 @@ namespace vnet_capacity_planner.Models
     public class VirtualNetwork
     {
         public IPRange[] IPRanges { get; set; }
-        public Subnet[] Subnets { get; set; }
+        public List<Subnet> Subnets { get; set; }
 
         public List<ServiceSpec> ServiceSpecs { get; set; }
 
@@ -22,7 +23,7 @@ namespace vnet_capacity_planner.Models
                 }
             };
 
-            Subnets = Array.Empty<Subnet>();
+            Subnets = new List<Subnet>();
 
 
             ServiceSpecs = new List<ServiceSpec>
@@ -66,8 +67,16 @@ namespace vnet_capacity_planner.Models
             };
         }
 
+        public IPNetwork IPNetwork
+        {
+            get { return IPRanges[0].IPNetwork; }
+        }
+
         public event Action OnVnetStartIpChange;
         private void NotifyVnetStartIpChange() => OnVnetStartIpChange?.Invoke();
+
+        public event Action OnSubnetChange;
+        private void NotifySubnetChange() => OnSubnetChange?.Invoke();
         
         public void SetVnetStartIp(int index, string ip)
         {
@@ -76,6 +85,14 @@ namespace vnet_capacity_planner.Models
                 IPRanges[index].StartIP = ip;
                 NotifyVnetStartIpChange();
             }
+        }
+
+        public void AddSubnet(Subnet subnet)
+        {
+            Subnets.Add(subnet);
+            IPRanges[0].WideSubnet(subnet.Network);
+
+            NotifySubnetChange();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace vnet_capacity_planner.Models
             }
             set
             {
-                _ipNetwork = IPNetwork.Parse(value, _ipNetwork?.Cidr ?? Convert.ToByte(29));
+                _ipNetwork = IPNetwork.Parse(value, Convert.ToByte(Cidr));
             }
         }
 
@@ -42,6 +42,15 @@ namespace vnet_capacity_planner.Models
         public IPNetwork IPNetwork
         {
             get { return _ipNetwork; }
+        }
+
+        public void WideSubnet(IPNetwork subnet)
+        {
+            _ipNetwork = IPNetwork.WideSubnet(new IPNetwork[]
+            {
+                _ipNetwork,
+                subnet
+            });
         }
     }
 }
