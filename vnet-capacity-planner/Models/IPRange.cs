@@ -8,42 +8,21 @@ namespace vnet_capacity_planner.Models
     {
         private IPNetwork _ipNetwork = null;
 
-        public string StartIP 
-        { 
-            get 
-            { 
-                return _ipNetwork?.Network.ToString() ?? string.Empty; 
-            }
-            set
-            {
-                _ipNetwork = IPNetwork.Parse(value, Convert.ToByte(Cidr));
-            }
-        }
-
-        public string AddressSpace 
-        { 
-            get { return _ipNetwork?.ToString() ?? string.Empty; }
-        }
-
-        public string AddressCount
+        public string StartIP
         {
-            get { return _ipNetwork?.Total.ToString() ?? string.Empty; }
+            get => _ipNetwork?.Network.ToString() ?? string.Empty;
+            set => _ipNetwork = IPNetwork.Parse(value, Convert.ToByte(Cidr));
         }
 
-        public int Cidr
-        {
-            get { return _ipNetwork?.Cidr ?? 29; }
-        }
+        public string AddressSpace => _ipNetwork?.ToString() ?? string.Empty;
 
-        public string AddressRange
-        {
-            get { return _ipNetwork == null ? string.Empty : $"{_ipNetwork.Network} - {_ipNetwork.Broadcast}"; }
-        }
+        public string AddressCount => _ipNetwork?.Total.ToString() ?? string.Empty;
 
-        public IPNetwork IPNetwork
-        {
-            get { return _ipNetwork; }
-        }
+        public int Cidr => _ipNetwork?.Cidr ?? 29;
+
+        public string AddressRange => _ipNetwork == null ? string.Empty : $"{_ipNetwork.Network} - {_ipNetwork.Broadcast}";
+
+        public IPNetwork IPNetwork => _ipNetwork;
 
         public void WideSubnet(List<Subnet> subnets)
         {

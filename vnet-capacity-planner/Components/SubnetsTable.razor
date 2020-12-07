@@ -5,6 +5,7 @@
 <p />
 <Table TItem="Subnet" DataSource="@Vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
+    <Column Title="Azure Resource" Field="@context.ServiceName" />
     <Column Title="Address Space" Field="@context.AddressSpace" />
     <Column Title="Address Range" Field="@context.AddressRange" />
     <Column Title="Address Count" Field="@context.AddressCount" />
@@ -24,7 +25,7 @@ else
     <Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" OkButtonProps="@(new ButtonProps { Disabled = subnet.Service == null })">
         <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 6 }" WrapperCol="new ColLayoutParam { Span = 18 }">
             <ValidationSummary />
-            <FormItem Label="Service">
+            <FormItem Label="Azure Resource">
                 <Select DataSource="@Vnet.ServiceSpecs" @bind-Value="@context.ServiceName"
                         ValueName="@nameof(ServiceSpec.Name)" LabelName="@nameof(ServiceSpec.Name)"
                         OnSelectedItemChanged="HandleOnSelectedItemChanged" />

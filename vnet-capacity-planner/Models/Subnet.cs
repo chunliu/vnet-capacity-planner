@@ -35,31 +35,19 @@ namespace vnet_capacity_planner.Models
         }
 
         [DisplayName("Address Count")]
-        public int AddressCount 
-        { 
-            get { return (int)(Network?.Total ?? 0); }
-        }
+        public int AddressCount => (int)(Network?.Total ?? 0);
 
         [DisplayName("Available Count")]
-        public int AvailableCount 
-        { 
-            get { return AddressCount - (ServiceInstances * IpPerInstance + AdditionalIps + ReservedIps); }
-        }
+        public int AvailableCount => ServiceName?.Equals("Other") ?? false ? AddressCount - ((ServiceInstances * IpPerInstance) + AdditionalIps + ReservedIps) : 0;
 
         [DisplayName("Address Space")]
-        public string AddressSpace
-        {
-            get { return Network?.ToString() ?? string.Empty; }
-        }
+        public string AddressSpace => Network?.ToString() ?? string.Empty;
 
         public VirtualNetwork VirtualNetwork { get; set; }
 
         public ServiceSpec Service { get; set; }
 
-        public IPNetwork Network 
-        {
-            get { return PopulateNetwork(); } 
-        }
+        public IPNetwork Network => PopulateNetwork();
 
         public IPNetwork PopulateNetwork()
         {
@@ -116,7 +104,7 @@ namespace vnet_capacity_planner.Models
             if (!Service.FixedSubnetCidr && Service.MaxInstances > Service.MinInstances
                 && (ServiceInstances > Service.MaxInstances || ServiceInstances < Service.MinInstances))
             {
-                results.Add(new ValidationResult($"The instance must be between {Service.MinInstances} and {Service.MaxInstances}"));
+                results.Add(new ValidationResult($"The instance must be between {Service.MinInstances} and {Service.MaxInstances}."));
             }
 
             var network = Network;
