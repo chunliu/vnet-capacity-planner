@@ -3,7 +3,7 @@
 
 <Button Type="primary" Icon="plus-circle" OnClick="@AddSubnetClick">Add Subnet</Button>
 <p />
-<Table TItem="Subnet" DataSource="@Vnet.Subnets" HidePagination="true">
+<Table @ref="subnetTable" TItem="Subnet" DataSource="@Vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
     <Column Title="Azure Resource" Field="@context.ServiceName" />
     <Column Title="Address Space" Field="@context.AddressSpace" />
@@ -11,7 +11,6 @@
     <Column Title="Address Count" Field="@context.AddressCount" />
     <Column Title="Available Count" Field="@context.AvailableCount" />
     <ActionColumn>
-        @*<Button Icon="edit" Shape="circle" OnClick="@(() => EditSubnet(context.Name))" />*@
         <Button Icon="delete" Shape="circle" OnClick="@(() => DeleteSubnet(context.Name))" />
     </ActionColumn>
 </Table>
@@ -65,19 +64,29 @@ else
 
     Subnet subnet = null;
 
+    Table<Subnet> subnetTable;
+
+    protected override void OnInitialized()
+    {
+        Vnet.OnSubnetChange += SubnetHasChanged;
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        Vnet.OnSubnetChange -= SubnetHasChanged;
+    }
+
+    private void SubnetHasChanged() => subnetTable.ReloadData();
+
     private void HandleOnSelectedItemChanged(ServiceSpec selectedService)
     {
         subnet.Service = selectedService;
         subnet.ServiceName = selectedService.Name;
-
-        if (selectedService.FixedSubnetName)
-            subnet.Name = selectedService.SubnetName;
-
-        if (selectedService.Name != "Other")
-        {
-            subnet.IpPerInstance = selectedService.IpPerInstance;
-            subnet.AdditionalIps = selectedService.AdditionalIps;
-        }
+        subnet.Name = selectedService.SubnetName;
+        subnet.IpPerInstance = selectedService.IpPerInstance;
+        subnet.AdditionalIps = selectedService.AdditionalIps;
     }
 
     private void AddSubnetClick()
@@ -105,12 +114,6 @@ else
         modalVisible = false;
         subnet = null;
     }
-
-    //private void EditSubnet(string subnetName)
-    //{
-    //    subnet = Vnet.Subnets.Where(s => s.Name.Equals(subnetName)).FirstOrDefault().Clone();
-    //    modalVisible = true;
-    //}
 
     private void DeleteSubnet(string subnetName)
     {

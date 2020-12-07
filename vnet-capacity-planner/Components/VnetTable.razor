@@ -1,10 +1,11 @@
 ﻿@using System.Net
 @using vnet_capacity_planner.Models
 @inject VirtualNetwork Vnet
+@inject ConfirmService _confirmService
 
 <Table @ref="vnetTable" TItem="IPRange" DataSource="@Vnet.IPRanges" HidePagination="true">
     <Column Title="Network IP" Field="@context.StartIP">
-        <input class="ant-input" value="@startIp" @onchange="StartIpChanged" 
+        <input class="ant-input" value="@startIp" @onchange="@(async (e) => await StartIpChanged(e))"
                maxlength=15 @onfocus="StartIpFocus" />
     </Column>
     <Column Title="Address Space" Field="@context.AddressSpace" />
@@ -37,12 +38,9 @@
         Vnet.OnSubnetChange -= SubnetHasChanged;
     }
 
-    private void SubnetHasChanged()
-    {
-        vnetTable.ReloadData();
-    }
+    private void SubnetHasChanged() => vnetTable.ReloadData();
 
-    private void StartIpChanged(ChangeEventArgs e)
+    private async Task StartIpChanged(ChangeEventArgs e)
     {
         IPAddress ipAddress = null;
         bool validIp = IPAddress.TryParse(e.Value?.ToString(), out ipAddress);
@@ -65,8 +63,25 @@
             return;
         }
 
-        Vnet.SetVnetStartIp(0, e.Value.ToString());
+        string newIp = e.Value.ToString();
+
+        if (Vnet.Subnets.Count > 0 && newIp != Vnet.GetVnetStartIp(0))
+        {
+            var content = "Chaning network IP will reset all subnets!";
+            var title = "Warning";
+            var confirmResult = await _confirmService.Show(content, title, ConfirmButtons.OKCancel, ConfirmIcon.Warning);
+            if (confirmResult == ConfirmResult.OK)
+            {
+                Vnet.SetVnetStartIp(0, newIp);
+                Vnet.ResetSubnets();
+            }
+            else
+                e.Value = startIp;
+        }
+        else
+            Vnet.SetVnetStartIp(0, newIp);
     }
+
 
     private void StartIpFocus(FocusEventArgs e)
     {

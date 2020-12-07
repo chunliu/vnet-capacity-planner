@@ -18,12 +18,16 @@ namespace vnet_capacity_planner
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             // Add antd
             builder.Services.AddAntDesign();
             builder.Services.AddSingleton<VirtualNetwork>();
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+            var vnetState = host.Services.GetRequiredService<VirtualNetwork>();
+            await vnetState.Initialize();
+
+            await host.RunAsync();
         }
     }
 }

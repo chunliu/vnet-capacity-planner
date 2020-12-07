@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Azure Firewall",
+    "fixedSubnetName": true,
+    "subnetName": "AzureFirewallSubnet",
+    "fixedSubnetCidr": true,
+    "subnetCidr": 26
+  },
+  {
+    "name": "API Management",
+    "fixedSubnetName": false,
+    "subnetName": "",
+    "fixedSubnetCidr": false,
+    "subnetCidr": 0,
+    "minInstances": 1,
+    "maxInstances": 10,
+    "ipPerInstance": 2,
+    "additionalIps": 1
+  },
+  {
+    "name": "Other",
+    "fixedSubnetName": false,
+    "fixedSubnetCidr": false
+  }
+]

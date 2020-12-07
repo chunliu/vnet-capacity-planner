@@ -2,18 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace vnet_capacity_planner.Models
 {
     public class VirtualNetwork
     {
+        private readonly HttpClient _httpClient;
         public IPRange[] IPRanges { get; set; }
         public List<Subnet> Subnets { get; set; }
 
         public List<ServiceSpec> ServiceSpecs { get; set; }
 
-        public VirtualNetwork()
+        public VirtualNetwork(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public async Task Initialize()
         {
             IPRanges = new IPRange[]
             {
@@ -25,59 +33,20 @@ namespace vnet_capacity_planner.Models
 
             Subnets = new List<Subnet>();
 
-
-            ServiceSpecs = new List<ServiceSpec>
-            {
-                new()
-                {
-                    Name = "Azure Firewall",
-                    FixedSubnetName = true,
-                    SubnetName = "AzureFirewallSubnet",
-                    FixedSubnetCidr = true,
-                    SubnetCidr = 26,
-                    MinInstances = 0,
-                    MaxInstances = 0,
-                    IpPerInstance = 0,
-                    AdditionalIps = 0
-                },
-                new()
-                {
-                    Name = "API Management",
-                    FixedSubnetName = false,
-                    SubnetName = "",
-                    FixedSubnetCidr = false,
-                    SubnetCidr = 0,
-                    MinInstances = 1,
-                    MaxInstances = 10,
-                    IpPerInstance = 2,
-                    AdditionalIps = 1
-                },
-                new()
-                {
-                    Name = "Other",
-                    FixedSubnetName = false,
-                    SubnetName = "",
-                    FixedSubnetCidr = false,
-                    SubnetCidr = 0,
-                    MinInstances = 0,
-                    MaxInstances = 0,
-                    IpPerInstance = 0,
-                    AdditionalIps = 0
-                }
-            };
+            var services = await _httpClient.GetFromJsonAsync<ServiceSpec[]>("data/services.json");
+            ServiceSpecs = services.ToList();
         }
 
-        public IPNetwork IPNetwork
-        {
-            get { return IPRanges[0].IPNetwork; }
-        }
+        public IPNetwork IPNetwork => IPRanges[0].IPNetwork;
 
         public event Action OnVnetStartIpChange;
         private void NotifyVnetStartIpChange() => OnVnetStartIpChange?.Invoke();
 
         public event Action OnSubnetChange;
         private void NotifySubnetChange() => OnSubnetChange?.Invoke();
-        
+
+        public string GetVnetStartIp(int index) => IPRanges[index].StartIP;
+
         public void SetVnetStartIp(int index, string ip)
         {
             if (IPRanges[index].StartIP != ip)
@@ -110,6 +79,14 @@ namespace vnet_capacity_planner.Models
 
                 NotifySubnetChange();
             }
+        }
+
+        public void ResetSubnets()
+        {
+            Subnets.Clear();
+            IPRanges[0].WideSubnet(Subnets);
+
+            NotifySubnetChange();
         }
     }
 }
