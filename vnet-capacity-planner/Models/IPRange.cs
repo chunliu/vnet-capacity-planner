@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace vnet_capacity_planner.Models
@@ -44,13 +45,21 @@ namespace vnet_capacity_planner.Models
             get { return _ipNetwork; }
         }
 
-        public void WideSubnet(IPNetwork subnet)
+        public void WideSubnet(List<Subnet> subnets)
         {
-            _ipNetwork = IPNetwork.WideSubnet(new IPNetwork[]
+            var smallest = IPNetwork.Parse(StartIP, Convert.ToByte(29));
+
+            List<IPNetwork> all = new List<IPNetwork>
             {
-                _ipNetwork,
-                subnet
-            });
+                smallest
+            };
+
+            foreach (var subnet in subnets)
+            {
+                all.Add(subnet.Network);
+            }
+
+            _ipNetwork = IPNetwork.WideSubnet(all.ToArray());
         }
     }
 }

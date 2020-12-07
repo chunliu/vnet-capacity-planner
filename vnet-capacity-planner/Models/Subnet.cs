@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 
 namespace vnet_capacity_planner.Models
 {
-    public class Subnet
+    public class Subnet : IValidatableObject
     {
-        IPNetwork _subnet;
-
         private readonly int ReservedIps = 5;
 
         [Required]
@@ -27,13 +27,17 @@ namespace vnet_capacity_planner.Models
         [DisplayName("Address Range")]
         public string AddressRange 
         { 
-            get { return _subnet == null ? string.Empty : $"{_subnet.Network} - {_subnet.Broadcast}"; }
+            get 
+            {
+                var network = Network;
+                return network == null ? string.Empty : $"{network.Network} - {network.Broadcast}"; 
+            }
         }
 
         [DisplayName("Address Count")]
         public int AddressCount 
         { 
-            get { return (int)(_subnet?.Total ?? 0); }
+            get { return (int)(Network?.Total ?? 0); }
         }
 
         [DisplayName("Available Count")]
@@ -45,22 +49,25 @@ namespace vnet_capacity_planner.Models
         [DisplayName("Address Space")]
         public string AddressSpace
         {
-            get { return _subnet?.ToString() ?? string.Empty; }
+            get { return Network?.ToString() ?? string.Empty; }
         }
 
-        public IPNetwork VnetNetwork { get; set; }
+        public VirtualNetwork VirtualNetwork { get; set; }
 
         public ServiceSpec Service { get; set; }
 
         public IPNetwork Network 
         {
-            get { return _subnet; } 
+            get { return PopulateNetwork(); } 
         }
 
-        public void PopulateNetwork()
+        public IPNetwork PopulateNetwork()
         {
-            int cidr = 0;
-            if(Service.FixedSubnetCidr)
+            if (Service == null)
+                return null;
+
+            int cidr;
+            if (Service.FixedSubnetCidr)
             {
                 cidr = Service.SubnetCidr;
             }
@@ -69,23 +76,19 @@ namespace vnet_capacity_planner.Models
                 var ipCount = ServiceInstances * IpPerInstance + AdditionalIps + ReservedIps;
                 cidr = GuessCidr(ipCount, 29);
             }
-
-            _subnet = IPNetwork.Parse(StartIP, Convert.ToByte(cidr));
-
-            Console.WriteLine(_subnet.Network);
-            Console.WriteLine(_subnet.Broadcast);
-            Console.WriteLine(_subnet.Cidr);
+            
+            return IPNetwork.Parse(StartIP, Convert.ToByte(cidr));
         }
 
-        private int GuessCidr(int addressCount, int start = 32)
+        private static int GuessCidr(int addressCount, int start = 29, int end = 8)
         {
-            for(int i = start; i >= 0; i--)
+            for(int i = start; i >= end; i--)
             {
                 if (addressCount <= Math.Pow(2, (32 - i)))
                     return i;
             }
 
-            return -1;
+            return 0;
         }
 
         public Subnet Clone()
@@ -93,9 +96,58 @@ namespace vnet_capacity_planner.Models
             Subnet subnet = (Subnet)this.MemberwiseClone();
             subnet.Service = this.Service.Clone();
 
-            subnet.PopulateNetwork();
-
             return subnet;
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var results = new List<ValidationResult>();
+
+            if (VirtualNetwork.Subnets.Where(s => s.Name.Equals(Name)).FirstOrDefault() != null)
+            {
+                results.Add(new ValidationResult("Subnet name must be unique within a virtual network."));
+            }
+
+            if (!Service.FixedSubnetCidr && IpPerInstance <= 0)
+            {
+                results.Add(new ValidationResult("IP/Instance must be greater than 0."));
+            }
+
+            if (!Service.FixedSubnetCidr && Service.MaxInstances > Service.MinInstances
+                && (ServiceInstances > Service.MaxInstances || ServiceInstances < Service.MinInstances))
+            {
+                results.Add(new ValidationResult($"The instance must be between {Service.MinInstances} and {Service.MaxInstances}"));
+            }
+
+            var network = Network;
+            if (!Equals(network.Network, IPAddress.Parse(StartIP)))
+            {
+                results.Add(new ValidationResult($"{StartIP}/{network.Cidr} is not a valid CIDR block."));
+                return results;
+            }
+
+            bool wideResult = IPNetwork.TryWideSubnet(
+                new IPNetwork[]
+                {
+                    VirtualNetwork.IPNetwork,
+                    network
+                }, out IPNetwork widedNetwork);
+            if (!wideResult || !Equals(VirtualNetwork.IPNetwork.Network, widedNetwork.Network))
+            {
+                results.Add(new ValidationResult($"The subnet address range {network} is not contained in the virtual network's address spaces."));
+                return results;
+            }
+
+            foreach (var subnet in VirtualNetwork.Subnets)
+            {
+                if(network.Overlap(subnet.Network))
+                {
+                    results.Add(new ValidationResult($"The subnet address range {network} overlaps with {subnet.Name} address range {subnet.Network}."));
+                    break;
+                }
+            }
+
+            return results;
         }
     }
 }

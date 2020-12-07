@@ -9,68 +9,81 @@
     <Column Title="Address Range" Field="@context.AddressRange" />
     <Column Title="Address Count" Field="@context.AddressCount" />
     <Column Title="Available Count" Field="@context.AvailableCount" />
+    <ActionColumn>
+        @*<Button Icon="edit" Shape="circle" OnClick="@(() => EditSubnet(context.Name))" />*@
+        <Button Icon="delete" Shape="circle" OnClick="@(() => DeleteSubnet(context.Name))" />
+    </ActionColumn>
 </Table>
 
-<Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" OkButtonProps="@(new ButtonProps { Disabled = subnet.Service == null })">
-    <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 6 }" WrapperCol="new ColLayoutParam { Span = 18 }">
-        <FormItem Label="Service">
-            <Select DataSource="@Vnet.ServiceSpecs" @bind-Value="@context.ServiceName"
-                    ValueName="@nameof(ServiceSpec.Name)" LabelName="@nameof(ServiceSpec.Name)"
-                    OnSelectedItemChanged="HandleOnSelectedItemChanged" />
-        </FormItem>
-        <FormItem Label="Name">
-            <Input @bind-Value="@context.Name" Disabled="@(context.Service?.FixedSubnetName ?? false)" />
-        </FormItem>
-        <FormItem Label="Start IP">
-            <Input @bind-Value="@context.StartIP" />
-        </FormItem>
-        @if (context.Service?.FixedSubnetCidr ?? false)
-        {
-            <FormItem Label="CIDR">
-                <Input @bind-Value="@context.Service.SubnetCidr" Disabled="@context.Service.FixedSubnetCidr" />
+@if (subnet == null)
+{
+    <Modal></Modal>
+}
+else
+{
+    <Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" OkButtonProps="@(new ButtonProps { Disabled = subnet.Service == null })">
+        <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 6 }" WrapperCol="new ColLayoutParam { Span = 18 }">
+            <ValidationSummary />
+            <FormItem Label="Service">
+                <Select DataSource="@Vnet.ServiceSpecs" @bind-Value="@context.ServiceName"
+                        ValueName="@nameof(ServiceSpec.Name)" LabelName="@nameof(ServiceSpec.Name)"
+                        OnSelectedItemChanged="HandleOnSelectedItemChanged" />
             </FormItem>
-        }
-        else
-        {
-            <FormItem Label="Instances">
-                <Input @bind-Value="@context.ServiceInstances" />
-                @if (context.Service != null && context.Service.MaxInstances > context.Service.MinInstances
-                 && (context.ServiceInstances < context.Service.MinInstances || context.ServiceInstances > context.Service.MaxInstances))
-                {
-                    <ValidationError ErrorMessage="@($"Instances must be between {context.Service.MinInstances} and {context.Service.MaxInstances}.")" />
-                }
+            <FormItem Label="Name">
+                <Input @bind-Value="@context.Name" Disabled="@(context.Service?.FixedSubnetName ?? false)" />
             </FormItem>
-            <FormItem Label="IP / Instance">
-                <Input @bind-Value="@context.IpPerInstance" Disabled="@((context.Service?.IpPerInstance ?? 0) != 0)" />
+            <FormItem Label="Start IP">
+                <Input @bind-Value="@context.StartIP" />
             </FormItem>
-            <FormItem Label="Additional IPs">
-                <Input @bind-Value="@context.AdditionalIps" Disabled="@((context.Service?.IpPerInstance ?? 0) != 0)" />
-            </FormItem>
-        }
-    </Form>
-</Modal>
+            @if (context.Service?.FixedSubnetCidr ?? false)
+            {
+                <FormItem Label="CIDR">
+                    <Input @bind-Value="@context.Service.SubnetCidr" Disabled="@context.Service.FixedSubnetCidr" />
+                </FormItem>
+            }
+            else
+            {
+                <FormItem Label="Instances">
+                    <Input @bind-Value="@context.ServiceInstances" />
+                </FormItem>
+                <FormItem Label="IP/Instance">
+                    <Input @bind-Value="@context.IpPerInstance" Disabled="@((context.Service?.IpPerInstance ?? 0) != 0)" />
+                </FormItem>
+                <FormItem Label="Additional IPs">
+                    <Input @bind-Value="@context.AdditionalIps" Disabled="@((context.Service?.IpPerInstance ?? 0) != 0)" />
+                </FormItem>
+            }
+        </Form>
+    </Modal>
+}
 
 @code {
     bool modalVisible = false;
 
     Form<Subnet> subnetForm;
 
-    Subnet subnet = new Subnet();
+    Subnet subnet = null;
 
     private void HandleOnSelectedItemChanged(ServiceSpec selectedService)
     {
         subnet.Service = selectedService;
         subnet.ServiceName = selectedService.Name;
-        subnet.Name = selectedService.SubnetName;
-        subnet.IpPerInstance = selectedService.IpPerInstance;
-        subnet.AdditionalIps = selectedService.AdditionalIps;
+
+        if (selectedService.FixedSubnetName)
+            subnet.Name = selectedService.SubnetName;
+
+        if (selectedService.Name != "Other")
+        {
+            subnet.IpPerInstance = selectedService.IpPerInstance;
+            subnet.AdditionalIps = selectedService.AdditionalIps;
+        }
     }
 
     private void AddSubnetClick()
     {
-        subnetForm?.Reset();
+        subnet = new Subnet();
         subnet.ServiceName = string.Empty;
-        subnet.VnetNetwork = Vnet.IPNetwork;
+        subnet.VirtualNetwork = Vnet;
 
         modalVisible = true;
     }
@@ -81,13 +94,25 @@
             return;
 
         Vnet.AddSubnet(subnet.Clone());
-        //subnetForm.Reset();
+
         modalVisible = false;
+        subnet = null;
     }
 
     private void HandleCancel(MouseEventArgs e)
     {
         modalVisible = false;
-        subnetForm.Reset();
+        subnet = null;
+    }
+
+    //private void EditSubnet(string subnetName)
+    //{
+    //    subnet = Vnet.Subnets.Where(s => s.Name.Equals(subnetName)).FirstOrDefault().Clone();
+    //    modalVisible = true;
+    //}
+
+    private void DeleteSubnet(string subnetName)
+    {
+        Vnet.DeleteSubnet(subnetName);
     }
 }

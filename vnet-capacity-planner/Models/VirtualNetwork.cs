@@ -89,10 +89,27 @@ namespace vnet_capacity_planner.Models
 
         public void AddSubnet(Subnet subnet)
         {
-            Subnets.Add(subnet);
-            IPRanges[0].WideSubnet(subnet.Network);
+            var network = Subnets.Where(s => s.Name.Equals(subnet.Name)).FirstOrDefault();
+            if (network == null)
+                Subnets.Add(subnet);
+            else
+                network = subnet;
+
+            IPRanges[0].WideSubnet(Subnets);
 
             NotifySubnetChange();
+        }
+
+        public void DeleteSubnet(string subnetName)
+        {
+            var network = Subnets.Where(s => s.Name.Equals(subnetName)).FirstOrDefault();
+            if (network != null)
+            {
+                Subnets.Remove(network);
+                IPRanges[0].WideSubnet(Subnets);
+
+                NotifySubnetChange();
+            }
         }
     }
 }
