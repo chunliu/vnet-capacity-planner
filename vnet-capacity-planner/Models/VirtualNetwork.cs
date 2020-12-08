@@ -45,7 +45,7 @@ namespace vnet_capacity_planner.Models
         public event Action OnSubnetChange;
         private void NotifySubnetChange() => OnSubnetChange?.Invoke();
 
-        public string GetVnetStartIp(int index) => IPRanges[index].StartIP;
+        public string GetVnetStartIp(int index = 0) => IPRanges[index].StartIP;
 
         public void SetVnetStartIp(int index, string ip)
         {

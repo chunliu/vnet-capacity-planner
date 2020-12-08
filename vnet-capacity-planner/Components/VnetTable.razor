@@ -5,12 +5,12 @@
 
 <Table @ref="vnetTable" TItem="IPRange" DataSource="@Vnet.IPRanges" HidePagination="true">
     <Column Title="Network IP" Field="@context.StartIP">
-        <input class="ant-input" value="@startIp" @onchange="@(async (e) => await StartIpChanged(e))"
-               maxlength=15 @onfocus="StartIpFocus" />
+        <Input @bind-Value="@startIp" OnFocus="StartIpFocus" OnBlur="StartIpBlur" />
     </Column>
     <Column Title="Address Space" Field="@context.AddressSpace" />
     <Column Title="Address Range" Field="@context.AddressRange" />
     <Column Title="Address Count" Field="@context.AddressCount" />
+    <Column Title="Availlable Count" Field="@(GetAvailableCount())"></Column>
 </Table>
 @if (showError)
 {
@@ -29,6 +29,7 @@
         startIp = Vnet.IPRanges[0].StartIP;
 
         Vnet.OnSubnetChange += SubnetHasChanged;
+        Vnet.OnVnetStartIpChange += NetworkIpHasChanged;
 
         base.OnInitialized();
     }
@@ -36,17 +37,20 @@
     public void Dispose()
     {
         Vnet.OnSubnetChange -= SubnetHasChanged;
+        Vnet.OnVnetStartIpChange -= NetworkIpHasChanged;
     }
+
+    private void NetworkIpHasChanged() => vnetTable.ReloadData();
 
     private void SubnetHasChanged() => vnetTable.ReloadData();
 
-    private async Task StartIpChanged(ChangeEventArgs e)
+    private async Task StartIpBlur(FocusEventArgs e)
     {
         IPAddress ipAddress = null;
-        bool validIp = IPAddress.TryParse(e.Value?.ToString(), out ipAddress);
+        bool validIp = IPAddress.TryParse(startIp, out ipAddress);
         if (!validIp)
         {
-            errorMessage = "IP address is not valid.";
+            errorMessage = "Network IP address is not valid.";
             showError = !validIp;
             return;
         }
@@ -57,35 +61,44 @@
 
         if (!network1.Contains(ipAddress) && !network2.Contains(ipAddress) && !network3.Contains(ipAddress))
         {
-            errorMessage = $"IP address is not recommended. " +
+            errorMessage = $"Network IP address is not recommended. " +
                     $"<a href=\"https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#what-address-ranges-can-i-use-in-my-vnets\" target=\"_blank\">More info</a>";
             showError = true;
             return;
         }
 
-        string newIp = e.Value.ToString();
-
-        if (Vnet.Subnets.Count > 0 && newIp != Vnet.GetVnetStartIp(0))
+        if (Vnet.Subnets.Count > 0 && startIp != Vnet.GetVnetStartIp())
         {
             var content = "Chaning network IP will reset all subnets!";
             var title = "Warning";
             var confirmResult = await _confirmService.Show(content, title, ConfirmButtons.OKCancel, ConfirmIcon.Warning);
             if (confirmResult == ConfirmResult.OK)
             {
-                Vnet.SetVnetStartIp(0, newIp);
+                Vnet.SetVnetStartIp(0, startIp);
                 Vnet.ResetSubnets();
             }
-            else
-                e.Value = startIp;
         }
         else
-            Vnet.SetVnetStartIp(0, newIp);
-    }
+            Vnet.SetVnetStartIp(0, startIp);
 
+        startIp = Vnet.GetVnetStartIp();
+    }
 
     private void StartIpFocus(FocusEventArgs e)
     {
         if (showError)
             showError = false;
+    }
+
+    private int GetAvailableCount()
+    {
+        int total = int.Parse(Vnet.IPRanges[0].AddressCount);
+
+        foreach (var subnet in Vnet.Subnets)
+        {
+            total -= subnet.UsedCount;
+        }
+
+        return total;
     }
 }

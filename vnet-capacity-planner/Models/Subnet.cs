@@ -38,8 +38,8 @@ namespace vnet_capacity_planner.Models
         public int AddressCount => (int)(Network?.Total ?? 0);
 
         [DisplayName("Available Count")]
-        public int AvailableCount => ServiceName?.Equals("Other") ?? false ? AddressCount - ((ServiceInstances * IpPerInstance) + AdditionalIps + ReservedIps) : 0;
-
+        public int AvailableCount => Service?.FixedSubnetCidr ?? false ? 0 : AddressCount - ((ServiceInstances * IpPerInstance) + AdditionalIps + ReservedIps);
+        public int UsedCount => Service?.FixedSubnetCidr ?? false ? AddressCount : (ServiceInstances * IpPerInstance) + AdditionalIps + ReservedIps;
         [DisplayName("Address Space")]
         public string AddressSpace => Network?.ToString() ?? string.Empty;
 

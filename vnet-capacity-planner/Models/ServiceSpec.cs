@@ -15,6 +15,7 @@ namespace vnet_capacity_planner.Models
         public int MaxInstances { get; set; }
         public int IpPerInstance { get; set; }
         public int AdditionalIps { get; set; }
+        public string RefUrl { get; set; }
 
         public ServiceSpec Clone()
         {

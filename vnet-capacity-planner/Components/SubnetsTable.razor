@@ -5,7 +5,16 @@
 <p />
 <Table @ref="subnetTable" TItem="Subnet" DataSource="@Vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
-    <Column Title="Azure Resource" Field="@context.ServiceName" />
+    <Column Title="Azure Resource" Field="@context.ServiceName">
+        @if(context.ServiceName == "Other")
+        {
+            @context.ServiceName;
+        }
+        else
+        {
+            <a href="@context.Service.RefUrl" target="_blank">@context.ServiceName</a>
+        }
+    </Column>
     <Column Title="Address Space" Field="@context.AddressSpace" />
     <Column Title="Address Range" Field="@context.AddressRange" />
     <Column Title="Address Count" Field="@context.AddressCount" />

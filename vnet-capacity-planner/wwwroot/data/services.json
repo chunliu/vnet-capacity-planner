@@ -4,10 +4,15 @@
     "fixedSubnetName": true,
     "subnetName": "AzureFirewallSubnet",
     "fixedSubnetCidr": true,
-    "subnetCidr": 26
+    "subnetCidr": 26,
+    "minInstances": 0,
+    "maxInstances": 0,
+    "ipPerInstance": 0,
+    "additionalIps": 0,
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/firewall\/firewall-faq#why-does-azure-firewall-need-a-26-subnet-size"
   },
   {
-    "name": "API Management",
+    "name": "API Management Premium",
     "fixedSubnetName": false,
     "subnetName": "",
     "fixedSubnetCidr": false,
@@ -15,11 +20,31 @@
     "minInstances": 1,
     "maxInstances": 10,
     "ipPerInstance": 2,
-    "additionalIps": 1
+    "additionalIps": 1,
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/api-management\/api-management-using-with-vnet#--subnet-size-requirement"
+  },
+  {
+    "name": "Application Gateway v2",
+    "fixedSubnetName": false,
+    "subnetName": "",
+    "fixedSubnetCidr": false,
+    "subnetCidr": 0,
+    "minInstances": 1,
+    "maxInstances": 125,
+    "ipPerInstance": 1,
+    "additionalIps": 1,
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/application-gateway\/configuration-infrastructure#size-of-the-subnet"
   },
   {
     "name": "Other",
     "fixedSubnetName": false,
-    "fixedSubnetCidr": false
+    "subnetName": "",
+    "fixedSubnetCidr": false,
+    "subnetCidr": 0,
+    "minInstances": 0,
+    "maxInstances": 0,
+    "ipPerInstance": 0,
+    "additionalIps": 0,
+    "refUrl": ""
   }
 ]
