@@ -31,7 +31,7 @@
 else
 {
     <Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" OkButtonProps="@(new ButtonProps { Disabled = subnet.Service == null })">
-        <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 6 }" WrapperCol="new ColLayoutParam { Span = 18 }">
+        <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 7 }" WrapperCol="new ColLayoutParam { Span = 17}">
             <ValidationSummary />
             <FormItem Label="Azure Resource">
                 <Select DataSource="@Vnet.ServiceSpecs" @bind-Value="@context.ServiceName"
@@ -41,7 +41,7 @@ else
             <FormItem Label="Name">
                 <Input @bind-Value="@context.Name" Disabled="@(context.Service?.FixedSubnetName ?? false)" />
             </FormItem>
-            <FormItem Label="Start IP">
+            <FormItem Label="Start Address">
                 <Input @bind-Value="@context.StartIP" />
             </FormItem>
             @if (context.Service?.FixedSubnetCidr ?? false)
@@ -55,10 +55,10 @@ else
                 <FormItem Label="Instances">
                     <Input @bind-Value="@context.ServiceInstances" />
                 </FormItem>
-                <FormItem Label="IP/Instance">
+                <FormItem Label="Address/Instance">
                     <Input @bind-Value="@context.IpPerInstance" Disabled="@((context.Service?.IpPerInstance ?? 0) != 0)" />
                 </FormItem>
-                <FormItem Label="Additional IPs">
+                <FormItem Label="Additional Addresses">
                     <Input @bind-Value="@context.AdditionalIps" Disabled="@((context.Service?.IpPerInstance ?? 0) != 0)" />
                 </FormItem>
             }

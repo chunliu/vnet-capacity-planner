@@ -18,9 +18,9 @@
 }
 
 @code {
-    private string startIp = "";
+    private string startIp = string.Empty;
     private bool showError = false;
-    private string errorMessage = "";
+    private string errorMessage = string.Empty;
 
     Table<IPRange> vnetTable;
 
@@ -42,7 +42,15 @@
 
     private void NetworkIpHasChanged() => vnetTable.ReloadData();
 
-    private void SubnetHasChanged() => vnetTable.ReloadData();
+    private void SubnetHasChanged()
+    {
+        vnetTable.ReloadData();
+        if (Convert.ToInt32(Vnet.IPNetwork.Cidr) < 8)
+        {
+            errorMessage = $"The virtual network is too large.";
+            showError = true;
+        }
+    }
 
     private async Task StartIpBlur(FocusEventArgs e)
     {
@@ -87,7 +95,10 @@
     private void StartIpFocus(FocusEventArgs e)
     {
         if (showError)
+        {
             showError = false;
+            errorMessage = string.Empty;
+        }
     }
 
     private int GetAvailableCount()

@@ -5,10 +5,6 @@
     "subnetName": "AzureFirewallSubnet",
     "fixedSubnetCidr": true,
     "subnetCidr": 26,
-    "minInstances": 0,
-    "maxInstances": 0,
-    "ipPerInstance": 0,
-    "additionalIps": 0,
     "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/firewall\/firewall-faq#why-does-azure-firewall-need-a-26-subnet-size"
   },
   {
@@ -34,6 +30,21 @@
     "ipPerInstance": 1,
     "additionalIps": 1,
     "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/application-gateway\/configuration-infrastructure#size-of-the-subnet"
+  },
+  {
+    "name": "App Service Environment",
+    "fixedSubnetName": false,
+    "fixedSubnetCidr": true,
+    "subnetCidr": 24,
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/app-service\/environment\/network-info#ase-subnet-size"
+  },
+  {
+    "name": "Virtual Network Gateway",
+    "fixedSubnetName": true,
+    "subnetName": "GatewaySubnet",
+    "fixedSubnetCidr": true,
+    "subnetCidr": 26,
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/expressroute\/expressroute-about-virtual-network-gateways#gwsub"
   },
   {
     "name": "Other",
