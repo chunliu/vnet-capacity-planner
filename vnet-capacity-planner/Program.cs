@@ -1,3 +1,4 @@
+using BlazorApplicationInsights;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,19 @@ namespace vnet_capacity_planner
             // Add antd
             builder.Services.AddAntDesign();
             builder.Services.AddSingleton<VirtualNetwork>();
+            builder.Services.AddBlazorApplicationInsights(async applicationInsights =>
+            {
+                var telemetryItem = new TelemetryItem()
+                {
+                    Tags = new Dictionary<string, object>()
+                    {
+                        { "ai.cloud.role", "SPA" },
+                        { "ai.cloud.roleInstance", "vnet-planner" },
+                    }
+                };
+
+                await applicationInsights.AddTelemetryInitializer(telemetryItem);
+            });
 
             var host = builder.Build();
             var vnetState = host.Services.GetRequiredService<VirtualNetwork>();
