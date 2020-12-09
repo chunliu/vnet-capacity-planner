@@ -20,7 +20,9 @@
     <Column Title="Address Count" Field="@context.AddressCount" />
     <Column Title="Available Count" Field="@context.AvailableCount" />
     <ActionColumn>
-        <Button Icon="delete" Shape="circle" OnClick="@(() => DeleteSubnet(context.Name))" />
+        <Tooltip Title="@("Delete")">
+            <Button Icon="delete" Shape="circle" OnClick="@(() => DeleteSubnet(context.Name))" />
+        </Tooltip>
     </ActionColumn>
 </Table>
 
