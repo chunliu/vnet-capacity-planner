@@ -2,6 +2,7 @@
     color: #fff;
     font-size: large;
     font-weight: bold;
+    float: left;
 }
 
 .site-content {
@@ -13,4 +14,8 @@
 
 ::deep .site-header {
     background: #484644;
+}
+
+::deep .feedback-btn {
+    float: right;
 }

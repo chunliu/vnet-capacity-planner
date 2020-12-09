@@ -3,16 +3,19 @@
 <div>
     <Layout Class="layout">
         <Header class="site-header">
-            <Row>
-                <Col Span="8"><div class="site-title">Azure Virtual Network Capacity Planner</div></Col>
-                <Col Span="2" Offset="14">
-                    <Button Ghost Type="link">
-                        <a href="https://github.com/chunliu/vnet-capacity-planner/issues" target="_blank">Feedback</a>
-                    </Button>
-                </Col>
-            </Row>
-
-
+            <Space>
+                <SpaceItem>
+                    <img src="/logo.png" width="48" height="48" />
+                </SpaceItem>
+                <SpaceItem>
+                    <div class="site-title">Azure Virtual Network Capacity Planner</div>
+                </SpaceItem>
+            </Space>
+            <div class="feedback-btn">
+                <Button Ghost Type="link">
+                    <a href="https://github.com/chunliu/vnet-capacity-planner/issues" target="_blank">Feedback</a>
+                </Button>
+            </div>
         </Header>
         <Content Style="padding: 0 50px;">
             <div class="site-content">@Body</div>

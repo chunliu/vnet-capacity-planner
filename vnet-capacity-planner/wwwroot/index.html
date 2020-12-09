@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>VNET Capacity Planner</title>
     <base href="/" />
+    <link rel="icon" href="logo.png" type="image/x-icon">
     <link href="css/app.css" rel="stylesheet" />
     <link href="_content/AntDesign/css/ant-design-blazor.css" rel="stylesheet" />
     <script src="_content/AntDesign/js/ant-design-blazor.js"></script>
@@ -13,14 +14,201 @@
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <style>
+            html,
+            body,
+            #root {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page-loading-wrap {
+                padding: 98px, 98px, 24px, 98px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .loading-spin {
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                color: rgba(0, 0, 0, 0.65);
+                font-size: 14px;
+                font-variant: tabular-nums;
+                line-height: 1.5;
+                list-style: none;
+                -webkit-font-feature-settings: 'tnum';
+                font-feature-settings: 'tnum';
+                position: absolute;
+                display: none;
+                color: #1890ff;
+                text-align: center;
+                vertical-align: middle;
+                opacity: 0;
+                -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+                transition: -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+                transition: transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+                transition: transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86), -webkit-transform 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+            }
+
+            .loading-spin-spinning {
+                position: static;
+                display: inline-block;
+                opacity: 1;
+            }
+
+            .loading-spin-dot {
+                position: relative;
+                display: inline-block;
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+            }
+
+            .loading-spin-dot-item {
+                position: absolute;
+                display: block;
+                width: 9px;
+                height: 9px;
+                background-color: #1890ff;
+                border-radius: 100%;
+                -webkit-transform: scale(0.75);
+                -ms-transform: scale(0.75);
+                transform: scale(0.75);
+                -webkit-transform-origin: 50% 50%;
+                -ms-transform-origin: 50% 50%;
+                transform-origin: 50% 50%;
+                opacity: 0.3;
+                -webkit-animation: loadingSpinMove 1s infinite linear alternate;
+                animation: loadingSpinMove 1s infinite linear alternate;
+            }
+
+                .loading-spin-dot-item:nth-child(1) {
+                    top: 0;
+                    left: 0;
+                }
+
+                .loading-spin-dot-item:nth-child(2) {
+                    top: 0;
+                    right: 0;
+                    -webkit-animation-delay: 0.4s;
+                    animation-delay: 0.4s;
+                }
+
+                .loading-spin-dot-item:nth-child(3) {
+                    right: 0;
+                    bottom: 0;
+                    -webkit-animation-delay: 0.8s;
+                    animation-delay: 0.8s;
+                }
+
+                .loading-spin-dot-item:nth-child(4) {
+                    bottom: 0;
+                    left: 0;
+                    -webkit-animation-delay: 1.2s;
+                    animation-delay: 1.2s;
+                }
+
+            .loading-spin-dot-spin {
+                -webkit-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+                transform: rotate(45deg);
+                -webkit-animation: loadingRotate 1.2s infinite linear;
+                animation: loadingRotate 1.2s infinite linear;
+            }
+
+            .loading-spin-lg .loading-spin-dot {
+                font-size: 32px;
+                width: 32px;
+                height: 32px;
+            }
+
+                .loading-spin-lg .loading-spin-dot i {
+                    width: 14px;
+                    height: 14px;
+                }
+
+            @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+                .loading-spin-blur {
+                    background: #fff;
+                    opacity: 0.5;
+                }
+            }
+
+            @-webkit-keyframes loadingSpinMove {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes loadingSpinMove {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @-webkit-keyframes loadingRotate {
+                to {
+                    -webkit-transform: rotate(405deg);
+                    transform: rotate(405deg);
+                }
+            }
+
+            @keyframes loadingRotate {
+                to {
+                    -webkit-transform: rotate(405deg);
+                    transform: rotate(405deg);
+                }
+            }
+        </style>
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; min-height: 420px; height: 100%;">
+            <div class="page-loading-wrap">
+                <div class="loading-spin loading-spin-lg loading-spin-spinning">
+                    <span class="loading-spin-dot loading-spin-dot-spin">
+                        <i class="loading-spin-dot-item"></i>
+                        <i class="loading-spin-dot-item"></i>
+                        <i class="loading-spin-dot-item"></i>
+                        <i class="loading-spin-dot-item"></i>
+                    </span>
+                </div>
+            </div>
+            <div>Loading...</div>
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <script src="_framework/blazor.webassembly.js"></script>
+    <!-- Support static compression. https://docs.microsoft.com/en-us/aspnet/core/blazor/host-and-deploy/webassembly?view=aspnetcore-5.0#compression -->
+    <script src="decode.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                if (type !== 'dotnetjs' && location.hostname !== 'localhost') {
+                    return (async function () {
+                        const response = await fetch(defaultUri + '.br', { cache: 'no-cache' });
+                        if (!response.ok) {
+                            throw new Error(response.statusText);
+                        }
+                        const originalResponseBuffer = await response.arrayBuffer();
+                        const originalResponseArray = new Int8Array(originalResponseBuffer);
+                        const decompressedResponseArray = BrotliDecode(originalResponseArray);
+                        const contentType = type ===
+                            'dotnetwasm' ? 'application/wasm' : 'application/octet-stream';
+                        return new Response(decompressedResponseArray,
+                            { headers: { 'content-type': contentType } });
+                    })();
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
