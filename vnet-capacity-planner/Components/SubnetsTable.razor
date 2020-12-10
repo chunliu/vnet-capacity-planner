@@ -1,9 +1,8 @@
-﻿@using vnet_capacity_planner.Models
-@inject VirtualNetwork Vnet
+﻿@inject VirtualNetwork _vnet
 
 <Button Type="primary" Icon="plus-circle" OnClick="@AddSubnetClick">Add Subnet</Button>
 <p />
-<Table @ref="subnetTable" TItem="Subnet" DataSource="@Vnet.Subnets" HidePagination="true">
+<Table @ref="subnetTable" TItem="Subnet" DataSource="@_vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
     <Column Title="Azure Resource" Field="@context.ServiceName">
         @if(context.ServiceName == "Other")
@@ -36,7 +35,7 @@ else
         <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 7 }" WrapperCol="new ColLayoutParam { Span = 17}">
             <ValidationSummary />
             <FormItem Label="Azure Resource">
-                <Select DataSource="@Vnet.ServiceSpecs" @bind-Value="@context.ServiceName"
+                <Select DataSource="@_vnet.ServiceSpecs" @bind-Value="@context.ServiceName"
                         ValueName="@nameof(ServiceSpec.Name)" LabelName="@nameof(ServiceSpec.Name)"
                         OnSelectedItemChanged="HandleOnSelectedItemChanged" />
             </FormItem>
@@ -79,14 +78,14 @@ else
 
     protected override void OnInitialized()
     {
-        Vnet.OnSubnetChange += SubnetHasChanged;
+        _vnet.OnSubnetChange += SubnetHasChanged;
 
         base.OnInitialized();
     }
 
     public void Dispose()
     {
-        Vnet.OnSubnetChange -= SubnetHasChanged;
+        _vnet.OnSubnetChange -= SubnetHasChanged;
     }
 
     private void SubnetHasChanged() => subnetTable.ReloadData();
@@ -104,7 +103,7 @@ else
     {
         subnet = new Subnet();
         subnet.ServiceName = string.Empty;
-        subnet.VirtualNetwork = Vnet;
+        subnet.VirtualNetwork = _vnet;
 
         modalVisible = true;
     }
@@ -114,7 +113,7 @@ else
         if (!subnetForm.Validate())
             return;
 
-        Vnet.AddSubnet(subnet.Clone());
+        _vnet.AddSubnet(subnet.Clone());
 
         modalVisible = false;
         subnet = null;
@@ -128,6 +127,6 @@ else
 
     private void DeleteSubnet(string subnetName)
     {
-        Vnet.DeleteSubnet(subnetName);
+        _vnet.DeleteSubnet(subnetName);
     }
 }
