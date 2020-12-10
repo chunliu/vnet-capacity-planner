@@ -1,10 +1,31 @@
 ﻿@page "/"
 @using vnet_capacity_planner.Components
+@inject MessageService _message
 
 <Card Title="Virtual Network" Bordered="false">
-    <VnetTable />
+    <Extra>
+        <Dropdown>
+            <ChildContent>
+                <a class="ant-dropdown-link" @onclick:preventDefault>Export <Icon Type="down" /></a>
+            </ChildContent>
+            <Overlay>
+                <Menu>
+                    <MenuItem OnClick="ClickExportCSV">CSV</MenuItem>
+                </Menu>
+            </Overlay>
+        </Dropdown>
+    </Extra>
+    <Body>
+        <VnetTable />
+    </Body>
 </Card>
 <Card Title="Subnets" Bordered="false">
     <SubnetsTable />
 </Card>
 
+@code {
+    private void ClickExportCSV(MouseEventArgs e)
+    {
+        _message.Info("Export CSV");
+    }
+}
