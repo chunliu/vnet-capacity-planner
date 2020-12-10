@@ -1,7 +1,12 @@
 ﻿@page "/"
 @using vnet_capacity_planner.Components
+@using System.Text;
+@using Microsoft.Extensions.Logging
+@using BlazorDownloadFile
 @inject VirtualNetwork _vnet
 @inject MessageService _message
+@inject ILogger<Index> _logger
+@inject IBlazorDownloadFileService _dldFile
 
 <Card Title="Virtual Network" Bordered="false">
     <Extra>
@@ -25,8 +30,32 @@
 </Card>
 
 @code {
-    private void ClickExportCSV(MouseEventArgs e)
+    private async Task ClickExportCSV(MouseEventArgs e)
     {
-        _message.Info("Export CSV");
+        _logger.LogInformation("Export CSV");
+        // Create CSV
+        StringBuilder csvBuilder = new StringBuilder("Type,Name,Resource,Address Space,Address Range,Address Count");
+        csvBuilder.AppendLine();
+        foreach (var ipRange in _vnet.IPRanges)
+        {
+            csvBuilder.Append($"Virtual Network,,,{ipRange.AddressSpace},{ipRange.AddressRange},{ipRange.AddressCount}");
+            csvBuilder.AppendLine();
+        }
+        foreach (var subnet in _vnet.Subnets)
+        {
+            csvBuilder.Append($"Subnet,{subnet.Name},{subnet.ServiceName},{subnet.AddressSpace},{subnet.AddressRange},{subnet.AddressCount}");
+            csvBuilder.AppendLine();
+        }
+
+        // Download the file
+        var csvBytes = Encoding.UTF8.GetBytes(csvBuilder.ToString());
+        var csvB64 = Convert.ToBase64String(csvBytes);
+
+        var result = await _dldFile.DownloadFile("vnet.csv", csvB64, "application/octet-stream");
+        if (!result.Succeeded)
+        {
+            _logger.LogError("Download file error", result.ErrorName, result.ErrorMessage);
+            Console.WriteLine($"{result.ErrorName}, {result.ErrorMessage}");
+        }
     }
 }

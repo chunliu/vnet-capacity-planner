@@ -1,4 +1,5 @@
 using BlazorApplicationInsights;
+using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,7 @@ namespace vnet_capacity_planner
 
                 await applicationInsights.AddTelemetryInitializer(telemetryItem);
             });
+            builder.Services.AddBlazorDownloadFile();
 
             var host = builder.Build();
             var vnetState = host.Services.GetRequiredService<VirtualNetwork>();

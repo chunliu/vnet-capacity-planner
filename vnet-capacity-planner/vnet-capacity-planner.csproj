@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.5.0-nightly-2012081156" />
     <PackageReference Include="BlazorApplicationInsights" Version="0.7.1" />
+    <PackageReference Include="BlazorDownloadFile" Version="2.1.2" />
     <PackageReference Include="IPNetwork2" Version="2.5.240" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.1" PrivateAssets="all" />
