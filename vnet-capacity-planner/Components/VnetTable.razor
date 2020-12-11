@@ -1,4 +1,8 @@
-﻿<Table @ref="vnetTable" TItem="IPRange" DataSource="@_vnet.IPRanges" HidePagination="true">
+﻿@if (ipRangeOverlap)
+{
+    <Alert Type="@AlertType.Error" Message="Address ranges overlap with each other." ShowIcon />
+}
+<Table @ref="vnetTable" TItem="IPRange" DataSource="@_vnet.IPRanges" HidePagination="true">
     <Column Title="Network IP" Field="@context.StartIpHolder">
         <Input @bind-Value="@context.StartIpHolder" OnBlur="@(async e => { await StartIpBlur(context); } )" />
         @if (context.HolderIpInvalid)
@@ -10,5 +14,17 @@
     <Column Title="Address Range" Field="@context.AddressRange" />
     <Column Title="Address Count" Field="@context.AddressCount" />
     <Column Title="Availlable Count" Field="@(GetAvailableCount(context))"></Column>
+    <ActionColumn>
+        <Tooltip Title="@("Delete address range")">
+            <Button Icon="delete" Shape="circle" Disabled="@(_vnet.IPRanges.Count <= 1)"
+                    OnClick="@(() => {
+                                   _vnet.ResetSubnets(context.Id);
+                                   _vnet.IPRanges.Remove(context);
+                               })" />
+        </Tooltip>
+    </ActionColumn>
 </Table>
-
+<p />
+<Tooltip Title="@("Add address range")">
+    <Button Shape="circle" Icon="plus" OnClick="@(() => { _vnet.AddIpRange(); })" />
+</Tooltip>

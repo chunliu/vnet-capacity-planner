@@ -1,8 +1,5 @@
 ﻿using AntDesign;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,6 +15,8 @@ namespace vnet_capacity_planner.Components
         [Inject]
         private ConfirmService _confirmService { get; set; }
 
+        private bool ipRangeOverlap = false;
+
         protected override void OnInitialized()
         {
             _vnet.OnSubnetChange += SubnetHasChanged;
@@ -32,16 +31,36 @@ namespace vnet_capacity_planner.Components
             _vnet.OnVnetStartIpChange -= NetworkIpHasChanged;
         }
 
-        private void NetworkIpHasChanged() => vnetTable.ReloadData();
+        private void NetworkIpHasChanged()
+        {
+            vnetTable.ReloadData();
+            CheckIpRangeOverlap();
+        }
+
+        private void CheckIpRangeOverlap()
+        {
+            for (int i = 0; i < _vnet.IPRanges.Count; i++)
+            {
+                for (int j = i + 1; j < _vnet.IPRanges.Count; j++)
+                {
+                    if (_vnet.IPRanges[i].IPNetwork.Overlap(_vnet.IPRanges[j].IPNetwork))
+                    {
+                        ipRangeOverlap = true;
+                        return;
+                    }
+                }
+            }
+            ipRangeOverlap = false;
+        }
 
         private void SubnetHasChanged()
         {
             vnetTable.ReloadData();
+            CheckIpRangeOverlap();
         }
 
         private async Task StartIpBlur(IPRange ipRange)
         {
-            Console.WriteLine($"Holder: {ipRange.StartIpHolder}, Start IP: {ipRange.StartIP}");
             bool validIp = IPAddress.TryParse(ipRange.StartIpHolder, out IPAddress ipAddress);
             if (!validIp)
             {
@@ -81,7 +100,7 @@ namespace vnet_capacity_planner.Components
                 if (confirmResult == ConfirmResult.OK)
                 {
                     _vnet.SetVnetStartIp(ipRange.Id, ipRange.StartIpHolder);
-                    _vnet.ResetSubnets();
+                    _vnet.ResetSubnets(ipRange.Id);
                 }
             }
             else

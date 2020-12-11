@@ -41,7 +41,7 @@ namespace vnet_capacity_planner.Components
 
         private void StartIpBlur(FocusEventArgs e)
         {
-            if (!IPAddress.TryParse(subnet.StartIP, out IPAddress ipAddress))
+            if (!IPAddress.TryParse(subnet.StartIP, out _))
             {
                 startIpError = true;
                 errorMessage = "The start ip is not valid.";
@@ -63,7 +63,6 @@ namespace vnet_capacity_planner.Components
 
         private int GetIpRangeId(IPNetwork network)
         {
-            Console.WriteLine(network);
             foreach (var ipRange in _vnet.IPRanges)
             {
                 bool wideResult = IPNetwork.TryWideSubnet(
@@ -72,8 +71,6 @@ namespace vnet_capacity_planner.Components
                         ipRange.IPNetwork,
                         network
                     }, out IPNetwork widedNetwork);
-
-                Console.WriteLine(widedNetwork);
 
                 if (wideResult && Equals(ipRange.IPNetwork.Network, widedNetwork.Network))
                 {

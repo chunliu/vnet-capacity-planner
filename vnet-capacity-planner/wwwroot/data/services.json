@@ -1,5 +1,13 @@
 [
   {
+    "name": "Azure Bastion",
+    "fixedSubnetName": true,
+    "subnetName": "AzureBastionSubnet",
+    "fixedSubnetCidr": true,
+    "subnetCidr": 27,
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/bastion\/tutorial-create-host-portal#createhost"
+  },
+  {
     "name": "Azure Firewall",
     "fixedSubnetName": true,
     "subnetName": "AzureFirewallSubnet",
