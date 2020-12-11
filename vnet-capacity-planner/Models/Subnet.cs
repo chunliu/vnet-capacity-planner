@@ -99,10 +99,20 @@ namespace vnet_capacity_planner.Models
             {
                 results.Add(new ValidationResult($"The instance must be between {Service.MinInstances} and {Service.MaxInstances}."));
             }
-            
+
+            var ipAddress = IPAddress.Parse(StartIP);
+            IPNetwork network1 = IPNetwork.Parse("10.0.0.0/8");
+            IPNetwork network2 = IPNetwork.Parse("172.16.0.0/12");
+            IPNetwork network3 = IPNetwork.Parse("192.168.0.0/16");
+            if (!network1.Contains(ipAddress) && !network2.Contains(ipAddress) && !network3.Contains(ipAddress))
+            {
+                results.Add(new ValidationResult($"The start ip is not in the range of RFC1918."));
+                return results;
+            }
+
             var network = Network;
             // Validate CIDR block.
-            if (!Equals(network.Network, IPAddress.Parse(StartIP)))
+            if (!Equals(network.Network, ipAddress))
             {
                 var current = IPNetwork.ToBigInteger(network.Network);
                 var next = current + network.Total;
@@ -110,23 +120,8 @@ namespace vnet_capacity_planner.Models
                 results.Add(new ValidationResult($"{StartIP}/{network.Cidr} is not a valid CIDR block. Try {network.Network} or {nextIp} instead."));
                 return results;
             }
-            // Validate if the subnet is in the vnet range.
-            bool ipInRange = false;
-            foreach(var ipRange in VirtualNetwork.IPRanges)
-            {
-                bool wideResult = IPNetwork.TryWideSubnet(
-                                    new IPNetwork[]
-                                    {
-                                        ipRange.IPNetwork,
-                                        network
-                                    }, out IPNetwork widedNetwork);
-                if (wideResult && Equals(ipRange.IPNetwork.Network, widedNetwork.Network))
-                {
-                    ipInRange = true;
-                    break;
-                }
-            }
-            if (!ipInRange)
+
+            if (IPRangeId < 0)
             {
                 results.Add(new ValidationResult($"The subnet address range {network} is not contained in the virtual network's address spaces."));
                 return results;

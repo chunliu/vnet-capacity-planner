@@ -7,6 +7,7 @@ using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components;
 using vnet_capacity_planner.Models;
 using AntDesign;
+using System.Linq;
 
 namespace vnet_capacity_planner.Pages
 {
@@ -31,11 +32,12 @@ namespace vnet_capacity_planner.Pages
             {
                 csvBuilder.Append($"Virtual Network,,,{ipRange.AddressSpace},{ipRange.AddressRange},{ipRange.AddressCount}");
                 csvBuilder.AppendLine();
-            }
-            foreach (var subnet in _vnet.Subnets)
-            {
-                csvBuilder.Append($"Subnet,{subnet.Name},{subnet.ServiceName},{subnet.AddressSpace},{subnet.AddressRange},{subnet.AddressCount}");
-                csvBuilder.AppendLine();
+                var subnets = _vnet.Subnets.Where(s => s.IPRangeId == ipRange.Id).ToList();
+                foreach(var subnet in subnets)
+                {
+                    csvBuilder.Append($"Subnet,{subnet.Name},{subnet.ServiceName},{subnet.AddressSpace},{subnet.AddressRange},{subnet.AddressCount}");
+                    csvBuilder.AppendLine();
+                }
             }
 
             // Download the file

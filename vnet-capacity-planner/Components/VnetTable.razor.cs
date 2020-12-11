@@ -43,14 +43,17 @@ namespace vnet_capacity_planner.Components
             {
                 for (int j = i + 1; j < _vnet.IPRanges.Count; j++)
                 {
-                    if (_vnet.IPRanges[i].IPNetwork.Overlap(_vnet.IPRanges[j].IPNetwork))
+                    if (_vnet.IPRanges[j].IPNetwork != null 
+                        && _vnet.IPRanges[i].IPNetwork.Overlap(_vnet.IPRanges[j].IPNetwork))
                     {
                         ipRangeOverlap = true;
+                        StateHasChanged();
                         return;
                     }
                 }
             }
             ipRangeOverlap = false;
+            StateHasChanged();
         }
 
         private void SubnetHasChanged()

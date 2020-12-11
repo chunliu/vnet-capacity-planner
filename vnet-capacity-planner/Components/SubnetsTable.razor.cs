@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Net;
+using System.Numerics;
 using vnet_capacity_planner.Models;
 
 namespace vnet_capacity_planner.Components
@@ -41,15 +42,26 @@ namespace vnet_capacity_planner.Components
 
         private void StartIpBlur(FocusEventArgs e)
         {
-            if (!IPAddress.TryParse(subnet.StartIP, out _))
+            if (!IPAddress.TryParse(subnet.StartIP, out IPAddress ipAddress))
             {
                 startIpError = true;
                 errorMessage = "The start ip is not valid.";
                 return;
             }
 
-            var id = GetIpRangeId(IPNetwork.Parse($"{subnet.StartIP}/31"));
-            if (id < 0)
+            // RFC1918
+            IPNetwork network1 = IPNetwork.Parse("10.0.0.0/8");
+            IPNetwork network2 = IPNetwork.Parse("172.16.0.0/12");
+            IPNetwork network3 = IPNetwork.Parse("192.168.0.0/16");
+            if (!network1.Contains(ipAddress) && !network2.Contains(ipAddress) && !network3.Contains(ipAddress))
+            {
+                startIpError = true;
+                errorMessage = "The start ip is not in the range of RFC1918.";
+                return;
+            }
+
+            subnet.IPRangeId = GetIpRangeId(IPNetwork.Parse($"{subnet.StartIP}/32"));
+            if (subnet.IPRangeId < 0)
             {
                 startIpError = true;
                 errorMessage = "The start ip is not contained in the virtual network's address spaces.";
@@ -58,27 +70,30 @@ namespace vnet_capacity_planner.Components
 
             startIpError = false;
             errorMessage = string.Empty;
-            subnet.IPRangeId = id;
         }
 
         private int GetIpRangeId(IPNetwork network)
         {
+            // The subnet should belong to the ip range with which it has the smallest gap.
+            int ipRangeId = -1;
+            BigInteger smallestGap = new BigInteger(16777216); // The largest number of addresses (10.0.0.0/8).
+            BigInteger networkIP = IPNetwork.ToBigInteger(network.Network);
             foreach (var ipRange in _vnet.IPRanges)
             {
-                bool wideResult = IPNetwork.TryWideSubnet(
-                    new IPNetwork[]
-                    {
-                        ipRange.IPNetwork,
-                        network
-                    }, out IPNetwork widedNetwork);
-
-                if (wideResult && Equals(ipRange.IPNetwork.Network, widedNetwork.Network))
+                var irIP = IPNetwork.ToBigInteger(ipRange.IPNetwork.Network);
+                var gap = BigInteger.Abs(networkIP - irIP);
+                if (smallestGap > gap)
                 {
-                    return ipRange.Id;
+                    smallestGap = gap;
+                    ipRangeId = ipRange.Id;
+                    if (smallestGap == 0)
+                    {
+                        break;
+                    }
                 }
             }
 
-            return -1;
+            return ipRangeId;
         }
 
         private void AddSubnetClick()
