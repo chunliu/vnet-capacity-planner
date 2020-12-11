@@ -82,19 +82,17 @@ namespace vnet_capacity_planner.Models
             WideIpRange(subnet.IPRangeId);
         }
 
-        public void DeleteSubnet(string subnetName)
+        public void DeleteSubnet(Subnet subnet)
         {
-            var subnet = Subnets.Where(s => s.Name.Equals(subnetName)).FirstOrDefault();
             if (subnet != null)
             {
-                Subnets.Remove(subnet);
+                Subnets = Subnets.Where(s => !s.Name.Equals(subnet.Name)).ToList();
                 WideIpRange(subnet.IPRangeId);
             }
         }
 
         public void ResetSubnets(int ipRangeId)
         {
-            //Subnets = Subnets.Where(s => s.IPRangeId != ipRangeId).ToList();
             Subnets.RemoveAll(s => s.IPRangeId == ipRangeId);
             WideIpRange(ipRangeId, false);
 

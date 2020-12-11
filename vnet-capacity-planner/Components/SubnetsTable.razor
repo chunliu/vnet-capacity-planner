@@ -18,7 +18,7 @@
     <Column Title="Available Count" Field="@context.AvailableCount" />
     <ActionColumn>
         <Tooltip Title="@("Delete subnet")">
-            <Button Icon="delete" Shape="circle" OnClick="@(() => DeleteSubnet(context.Name))" />
+            <Button Icon="delete" Shape="circle" OnClick="() => _vnet.DeleteSubnet(context)" />
         </Tooltip>
     </ActionColumn>
 </Table>

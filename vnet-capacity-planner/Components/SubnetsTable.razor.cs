@@ -80,19 +80,18 @@ namespace vnet_capacity_planner.Components
             BigInteger networkIP = IPNetwork.ToBigInteger(network.Network);
             foreach (var ipRange in _vnet.IPRanges)
             {
-                if (ipRange.IPNetwork == null)
+                if (ipRange.IPNetwork != null)
                 {
-                    continue;
-                }
-                var irIP = IPNetwork.ToBigInteger(ipRange.IPNetwork.Network);
-                var gap = BigInteger.Abs(networkIP - irIP);
-                if (smallestGap > gap)
-                {
-                    smallestGap = gap;
-                    ipRangeId = ipRange.Id;
-                    if (smallestGap == 0)
+                    var irIP = IPNetwork.ToBigInteger(ipRange.IPNetwork.Network);
+                    var gap = BigInteger.Abs(networkIP - irIP);
+                    if (smallestGap > gap)
                     {
-                        break;
+                        smallestGap = gap;
+                        ipRangeId = ipRange.Id;
+                        if (smallestGap == 0)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -127,7 +126,5 @@ namespace vnet_capacity_planner.Components
             modalVisible = false;
             subnet = null;
         }
-
-        private void DeleteSubnet(string subnetName) => _vnet.DeleteSubnet(subnetName);
     }
 }
