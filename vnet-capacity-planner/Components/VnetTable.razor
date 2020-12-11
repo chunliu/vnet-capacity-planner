@@ -2,7 +2,7 @@
 {
     <Alert Type="@AlertType.Error" Message="Address ranges overlap with each other." ShowIcon />
 }
-<Table @ref="vnetTable" TItem="IPRange" DataSource="@_vnet.IPRanges" HidePagination="true">
+<Table TItem="IPRange" DataSource="@_vnet.IPRanges" HidePagination="true">
     <Column Title="Network IP" Field="@context.StartIpHolder">
         <Input @bind-Value="@context.StartIpHolder" OnBlur="@(async e => { await StartIpBlur(context); } )" />
         @if (context.HolderIpInvalid)
@@ -26,5 +26,5 @@
 </Table>
 <p />
 <Tooltip Title="@("Add address range")">
-    <Button Shape="circle" Icon="plus" OnClick="@(() => { _vnet.AddIpRange(); })" />
+    <Button Shape="circle" Icon="plus" OnClick="() => { _vnet.AddIpRange(); }" />
 </Tooltip>

@@ -80,6 +80,10 @@ namespace vnet_capacity_planner.Components
             BigInteger networkIP = IPNetwork.ToBigInteger(network.Network);
             foreach (var ipRange in _vnet.IPRanges)
             {
+                if (ipRange.IPNetwork == null)
+                {
+                    continue;
+                }
                 var irIP = IPNetwork.ToBigInteger(ipRange.IPNetwork.Network);
                 var gap = BigInteger.Abs(networkIP - irIP);
                 if (smallestGap > gap)

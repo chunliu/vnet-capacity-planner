@@ -111,6 +111,11 @@ namespace vnet_capacity_planner.Models
             }
 
             var network = Network;
+            if (IPRangeId < 0)
+            {
+                results.Add(new ValidationResult($"The subnet address range {network} is not contained in the virtual network's address spaces."));
+                return results;
+            }
             // Validate CIDR block.
             if (!Equals(network.Network, ipAddress))
             {
@@ -121,11 +126,6 @@ namespace vnet_capacity_planner.Models
                 return results;
             }
 
-            if (IPRangeId < 0)
-            {
-                results.Add(new ValidationResult($"The subnet address range {network} is not contained in the virtual network's address spaces."));
-                return results;
-            }
             // Overlap with other subnets
             foreach (var subnet in VirtualNetwork.Subnets)
             {

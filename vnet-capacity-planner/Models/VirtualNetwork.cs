@@ -94,6 +94,7 @@ namespace vnet_capacity_planner.Models
 
         public void ResetSubnets(int ipRangeId)
         {
+            //Subnets = Subnets.Where(s => s.IPRangeId != ipRangeId).ToList();
             Subnets.RemoveAll(s => s.IPRangeId == ipRangeId);
             WideIpRange(ipRangeId, false);
 

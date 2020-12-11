@@ -9,7 +9,6 @@ namespace vnet_capacity_planner.Components
 {
     public partial class VnetTable
     {
-        Table<IPRange> vnetTable;
         [Inject]
         private VirtualNetwork _vnet { get; set; }
         [Inject]
@@ -33,7 +32,6 @@ namespace vnet_capacity_planner.Components
 
         private void NetworkIpHasChanged()
         {
-            vnetTable.ReloadData();
             CheckIpRangeOverlap();
         }
 
@@ -58,7 +56,6 @@ namespace vnet_capacity_planner.Components
 
         private void SubnetHasChanged()
         {
-            vnetTable.ReloadData();
             CheckIpRangeOverlap();
         }
 
@@ -86,7 +83,8 @@ namespace vnet_capacity_planner.Components
 
             ipRange.HolderIpInvalid = false;
             ipRange.IpInvalidMessage = string.Empty;
-            if (_vnet.Subnets.Count > 0 && ipRange.StartIpHolder != ipRange.StartIP)
+            var subnets = _vnet.Subnets.Where(s => s.IPRangeId == ipRange.Id).ToList();
+            if (subnets.Count > 0 && ipRange.StartIpHolder != ipRange.StartIP)
             {
                 // Too complex to sort out new addresses for all subnets. So reset them. 
                 var content = "Chaning network IP will reset all its subnets!";
