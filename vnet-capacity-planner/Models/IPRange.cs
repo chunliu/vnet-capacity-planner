@@ -7,7 +7,7 @@ namespace vnet_capacity_planner.Models
     public class IPRange
     {
         private IPNetwork _ipNetwork = null;
-
+        public int Id { get; set; }
         public string StartIP
         {
             get => _ipNetwork?.Network.ToString() ?? string.Empty;

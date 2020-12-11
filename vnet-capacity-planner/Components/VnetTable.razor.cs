@@ -43,11 +43,11 @@ namespace vnet_capacity_planner.Components
         private void SubnetHasChanged()
         {
             vnetTable.ReloadData();
-            if (Convert.ToInt32(_vnet.IPNetwork.Cidr) < 8)
-            {
-                errorMessage = $"The virtual network is too large.";
-                showError = true;
-            }
+            //if (Convert.ToInt32(_vnet.IPNetwork.Cidr) < 8)
+            //{
+            //    errorMessage = $"The virtual network is too large.";
+            //    showError = true;
+            //}
         }
 
         private async Task StartIpBlur(FocusEventArgs e)

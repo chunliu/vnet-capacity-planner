@@ -111,13 +111,22 @@ namespace vnet_capacity_planner.Models
                 return results;
             }
             // Validate if the subnet is in the vnet range.
-            bool wideResult = IPNetwork.TryWideSubnet(
-                new IPNetwork[]
+            bool ipInRange = false;
+            foreach(var ipRange in VirtualNetwork.IPRanges)
+            {
+                bool wideResult = IPNetwork.TryWideSubnet(
+                                    new IPNetwork[]
+                                    {
+                                        ipRange.IPNetwork,
+                                        network
+                                    }, out IPNetwork widedNetwork);
+                if (wideResult && Equals(ipRange.IPNetwork.Network, widedNetwork.Network))
                 {
-                    VirtualNetwork.IPNetwork,
-                    network
-                }, out IPNetwork widedNetwork);
-            if (!wideResult || !Equals(VirtualNetwork.IPNetwork.Network, widedNetwork.Network))
+                    ipInRange = true;
+                    break;
+                }
+            }
+            if (!ipInRange)
             {
                 results.Add(new ValidationResult($"The subnet address range {network} is not contained in the virtual network's address spaces."));
                 return results;

@@ -64,20 +64,20 @@ namespace vnet_capacity_planner.Components
         private int GetIpRangeId(IPNetwork network)
         {
             Console.WriteLine(network);
-            for (int i = 0; i < _vnet.IPRanges.Length; i++)
+            foreach (var ipRange in _vnet.IPRanges)
             {
                 bool wideResult = IPNetwork.TryWideSubnet(
                     new IPNetwork[]
                     {
-                    _vnet.IPRanges[i].IPNetwork,
-                    network
+                        ipRange.IPNetwork,
+                        network
                     }, out IPNetwork widedNetwork);
 
                 Console.WriteLine(widedNetwork);
 
-                if (wideResult && Equals(_vnet.IPRanges[i].IPNetwork.Network, widedNetwork.Network))
+                if (wideResult && Equals(ipRange.IPNetwork.Network, widedNetwork.Network))
                 {
-                    return i;
+                    return ipRange.Id;
                 }
             }
 
