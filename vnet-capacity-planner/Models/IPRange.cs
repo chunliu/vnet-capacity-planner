@@ -13,6 +13,9 @@ namespace vnet_capacity_planner.Models
             get => _ipNetwork?.Network.ToString() ?? string.Empty;
             set => _ipNetwork = IPNetwork.Parse(value, Convert.ToByte(Cidr));
         }
+        public string StartIpHolder { get; set; }
+        public bool HolderIpInvalid { get; set; }
+        public string IpInvalidMessage { get; set; }
 
         public string AddressSpace => _ipNetwork?.ToString() ?? string.Empty;
 

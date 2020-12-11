@@ -12,20 +12,14 @@ namespace vnet_capacity_planner.Components
 {
     public partial class VnetTable
     {
-        private string startIp = string.Empty;
-        private bool showError = false;
-        private string errorMessage = string.Empty;
         Table<IPRange> vnetTable;
         [Inject]
         private VirtualNetwork _vnet { get; set; }
         [Inject]
         private ConfirmService _confirmService { get; set; }
 
-
         protected override void OnInitialized()
         {
-            startIp = _vnet.IPRanges[0].StartIP;
-
             _vnet.OnSubnetChange += SubnetHasChanged;
             _vnet.OnVnetStartIpChange += NetworkIpHasChanged;
 
@@ -43,20 +37,16 @@ namespace vnet_capacity_planner.Components
         private void SubnetHasChanged()
         {
             vnetTable.ReloadData();
-            //if (Convert.ToInt32(_vnet.IPNetwork.Cidr) < 8)
-            //{
-            //    errorMessage = $"The virtual network is too large.";
-            //    showError = true;
-            //}
         }
 
-        private async Task StartIpBlur(FocusEventArgs e)
+        private async Task StartIpBlur(IPRange ipRange)
         {
-            bool validIp = IPAddress.TryParse(startIp, out IPAddress ipAddress);
+            Console.WriteLine($"Holder: {ipRange.StartIpHolder}, Start IP: {ipRange.StartIP}");
+            bool validIp = IPAddress.TryParse(ipRange.StartIpHolder, out IPAddress ipAddress);
             if (!validIp)
             {
-                errorMessage = "Network IP address is not valid.";
-                showError = !validIp;
+                ipRange.IpInvalidMessage = "Network IP address is not valid.";
+                ipRange.HolderIpInvalid = !validIp;
                 return;
             }
 
@@ -66,23 +56,23 @@ namespace vnet_capacity_planner.Components
             IPNetwork network3 = IPNetwork.Parse("192.168.0.0/16");
             if (!network1.Contains(ipAddress) && !network2.Contains(ipAddress) && !network3.Contains(ipAddress))
             {
-                errorMessage = $"Network IP address is not recommended. " +
+                ipRange.IpInvalidMessage = $"Network IP address is not recommended. " +
                         $"<a href=\"https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#what-address-ranges-can-i-use-in-my-vnets\" target=\"_blank\">More info</a>";
-                showError = true;
+                ipRange.HolderIpInvalid = true;
                 return;
             }
 
-            showError = false;
-            errorMessage = string.Empty;
-
-            if (_vnet.Subnets.Count > 0 && startIp != _vnet.GetVnetStartIp())
+            ipRange.HolderIpInvalid = false;
+            ipRange.IpInvalidMessage = string.Empty;
+            if (_vnet.Subnets.Count > 0 && ipRange.StartIpHolder != ipRange.StartIP)
             {
+                // Too complex to sort out new addresses for all subnets. So reset them. 
                 var content = "Chaning network IP will reset all its subnets!";
                 var title = "Warning";
                 var confirmResult = await _confirmService.Show(content, title, ConfirmButtons.OKCancel, ConfirmIcon.Warning,
                     new ConfirmButtonOptions()
                     {
-                        Button1Props = new ButtonProps() 
+                        Button1Props = new ButtonProps()
                         {
                             Type = "primary",
                             Danger = true
@@ -90,21 +80,24 @@ namespace vnet_capacity_planner.Components
                     });
                 if (confirmResult == ConfirmResult.OK)
                 {
-                    _vnet.SetVnetStartIp(0, startIp);
+                    _vnet.SetVnetStartIp(ipRange.Id, ipRange.StartIpHolder);
                     _vnet.ResetSubnets();
                 }
             }
             else
-                _vnet.SetVnetStartIp(0, startIp);
+                _vnet.SetVnetStartIp(ipRange.Id, ipRange.StartIpHolder);
 
-            startIp = _vnet.GetVnetStartIp();
+            ipRange.StartIpHolder = ipRange.StartIP;
         }
 
-        private int GetAvailableCount()
+        private int GetAvailableCount(IPRange ipRange)
         {
-            int total = int.Parse(_vnet.IPRanges[0].AddressCount);
+            if (ipRange == null || string.IsNullOrEmpty(ipRange.AddressCount))
+                return 0;
 
-            foreach (var subnet in _vnet.Subnets)
+            int total = int.Parse(ipRange.AddressCount);
+            var subnets = _vnet.Subnets.Where(s => s.IPRangeId == ipRange.Id).ToList();
+            foreach (var subnet in subnets)
             {
                 total -= subnet.UsedCount;
             }

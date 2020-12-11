@@ -1,14 +1,14 @@
 ﻿<Table @ref="vnetTable" TItem="IPRange" DataSource="@_vnet.IPRanges" HidePagination="true">
-    <Column Title="Network IP" Field="@context.StartIP">
-        <Input @bind-Value="@startIp" OnBlur="StartIpBlur" />
+    <Column Title="Network IP" Field="@context.StartIpHolder">
+        <Input @bind-Value="@context.StartIpHolder" OnBlur="@(async e => { await StartIpBlur(context); } )" />
+        @if (context.HolderIpInvalid)
+        {
+            <ValidationError ErrorMessage="@context.IpInvalidMessage" />
+        }
     </Column>
     <Column Title="Address Space" Field="@context.AddressSpace" />
     <Column Title="Address Range" Field="@context.AddressRange" />
     <Column Title="Address Count" Field="@context.AddressCount" />
-    <Column Title="Availlable Count" Field="@(GetAvailableCount())"></Column>
+    <Column Title="Availlable Count" Field="@(GetAvailableCount(context))"></Column>
 </Table>
-@if (showError)
-{
-    <ValidationError ErrorMessage="@errorMessage" />
-}
 

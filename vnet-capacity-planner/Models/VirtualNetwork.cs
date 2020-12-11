@@ -13,14 +13,11 @@ namespace vnet_capacity_planner.Models
         private readonly HttpClient _httpClient;
         public List<IPRange> IPRanges { get; set; }
         public List<Subnet> Subnets { get; set; }
-
         public List<ServiceSpec> ServiceSpecs { get; set; }
-
         public VirtualNetwork(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
-
         public async Task Initialize()
         {
             IPRanges = new List<IPRange>()
@@ -29,6 +26,7 @@ namespace vnet_capacity_planner.Models
                 {
                     Id = 0,
                     StartIP = "10.0.0.0",
+                    StartIpHolder = "10.0.0.0",
                 }
             };
 
@@ -38,21 +36,21 @@ namespace vnet_capacity_planner.Models
             ServiceSpecs = services.ToList();
         }
 
-        //public IPNetwork IPNetwork => IPRanges[0].IPNetwork;
-
         public event Action OnVnetStartIpChange;
         private void NotifyVnetStartIpChange() => OnVnetStartIpChange?.Invoke();
 
         public event Action OnSubnetChange;
         private void NotifySubnetChange() => OnSubnetChange?.Invoke();
 
-        public string GetVnetStartIp(int index = 0) => IPRanges[index].StartIP;
-
-        public void SetVnetStartIp(int index, string ip)
+        public void SetVnetStartIp(int irId, string ip)
         {
-            if (IPRanges[index].StartIP != ip)
+            if (string.IsNullOrEmpty(ip))
+                return;
+
+            var ipRange = IPRanges.Where(ir => ir.Id == irId).FirstOrDefault();
+            if ((ipRange?.StartIP ?? null) != ip)
             {
-                IPRanges[index].StartIP = ip;
+                ipRange.StartIP = ip;
                 NotifyVnetStartIpChange();
             }
         }
