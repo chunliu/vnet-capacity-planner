@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AntDesign" Version="0.5.0-nightly-2012081156" />
+    <PackageReference Include="AntDesign" Version="0.5.0-nightly-2012101444" />
     <PackageReference Include="BlazorApplicationInsights" Version="0.7.1" />
     <PackageReference Include="BlazorDownloadFile" Version="2.1.2" />
     <PackageReference Include="IPNetwork2" Version="2.5.240" />

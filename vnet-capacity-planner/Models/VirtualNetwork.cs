@@ -67,11 +67,10 @@ namespace vnet_capacity_planner.Models
         private void WideIpRange(int ipRangeId, bool notify = true)
         {
             var ipRange = IPRanges.Where(ir => ir.Id == ipRangeId).FirstOrDefault();
-            if (ipRange != null)
+            var subnets = Subnets.Where(s => s.IPRangeId == ipRangeId).ToList();
+            if (ipRange != null && subnets?.Count > 0)
             {
-                ipRange.WideSubnet(
-                    Subnets.Where(s => s.IPRangeId == ipRangeId).ToList()
-                );
+                ipRange.WideSubnet(subnets);
                 if (notify)
                     NotifySubnetChange();
             }
