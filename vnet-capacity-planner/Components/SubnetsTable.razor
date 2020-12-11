@@ -1,6 +1,4 @@
-﻿@inject VirtualNetwork _vnet
-
-<Button Type="primary" Icon="plus-circle" OnClick="@AddSubnetClick">Add Subnet</Button>
+﻿<Button Type="primary" Icon="plus-circle" OnClick="@AddSubnetClick">Add Subnet</Button>
 <p />
 <Table @ref="subnetTable" TItem="Subnet" DataSource="@_vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
@@ -43,7 +41,11 @@ else
                 <Input @bind-Value="@context.Name" Disabled="@(context.Service?.FixedSubnetName ?? false)" />
             </FormItem>
             <FormItem Label="Start Address">
-                <Input @bind-Value="@context.StartIP" />
+                <Input @bind-Value="@context.StartIP" OnBlur="StartIpBlur" />
+                @if (startIpError)
+                {
+                    <ValidationError ErrorMessage="@errorMessage" />
+                }
             </FormItem>
             @if (context.Service?.FixedSubnetCidr ?? false)
             {
@@ -65,68 +67,4 @@ else
             }
         </Form>
     </Modal>
-}
-
-@code {
-    bool modalVisible = false;
-
-    Form<Subnet> subnetForm;
-
-    Subnet subnet = null;
-
-    Table<Subnet> subnetTable;
-
-    protected override void OnInitialized()
-    {
-        _vnet.OnSubnetChange += SubnetHasChanged;
-
-        base.OnInitialized();
-    }
-
-    public void Dispose()
-    {
-        _vnet.OnSubnetChange -= SubnetHasChanged;
-    }
-
-    private void SubnetHasChanged() => subnetTable.ReloadData();
-
-    private void HandleOnSelectedItemChanged(ServiceSpec selectedService)
-    {
-        subnet.Service = selectedService;
-        subnet.ServiceName = selectedService.Name;
-        subnet.Name = selectedService.SubnetName;
-        subnet.IpPerInstance = selectedService.IpPerInstance;
-        subnet.AdditionalIps = selectedService.AdditionalIps;
-    }
-
-    private void AddSubnetClick()
-    {
-        subnet = new Subnet();
-        subnet.ServiceName = string.Empty;
-        subnet.VirtualNetwork = _vnet;
-
-        modalVisible = true;
-    }
-
-    private void HandleOk(MouseEventArgs e)
-    {
-        if (!subnetForm.Validate())
-            return;
-
-        _vnet.AddSubnet(subnet.Clone());
-
-        modalVisible = false;
-        subnet = null;
-    }
-
-    private void HandleCancel(MouseEventArgs e)
-    {
-        modalVisible = false;
-        subnet = null;
-    }
-
-    private void DeleteSubnet(string subnetName)
-    {
-        _vnet.DeleteSubnet(subnetName);
-    }
 }

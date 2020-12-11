@@ -15,7 +15,6 @@ namespace vnet_capacity_planner.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        [IPAddress]
         public string StartIP { get; set; }
         [Required]
         public string ServiceName { get; set; }
@@ -23,6 +22,7 @@ namespace vnet_capacity_planner.Models
         public int ServiceInstances { get; set; }
         public int IpPerInstance { get; set; }
         public int AdditionalIps { get; set; }
+        public int IPRangeId { get; set; }
         [DisplayName("Address Range")]
         public string AddressRange 
         { 
