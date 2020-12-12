@@ -69,9 +69,9 @@ namespace vnet_capacity_planner.Models
         private void WideIpRange(int ipRangeId, bool notify = true)
         {
             var ipRange = IPRanges.Where(ir => ir.Id == ipRangeId).FirstOrDefault();
-            var subnets = Subnets.Where(s => s.IPRangeId == ipRangeId).ToList();
-            if (ipRange != null && subnets?.Count > 0)
+            if (ipRange != null)
             {
+                var subnets = Subnets.Where(s => s.IPRangeId == ipRangeId).ToList();
                 ipRange.WideSubnet(subnets);
                 if (notify)
                     NotifySubnetChange();
@@ -83,7 +83,7 @@ namespace vnet_capacity_planner.Models
             Subnets.Add(subnet);
             WideIpRange(subnet.IPRangeId);
         }
-
+        // Delete a subnet
         public void DeleteSubnet(Subnet subnet)
         {
             if (subnet != null)
@@ -93,11 +93,20 @@ namespace vnet_capacity_planner.Models
             }
         }
 
+        // Reset the subnets when IPRange changes
         public void ResetSubnets(int ipRangeId)
         {
             Subnets.RemoveAll(s => s.IPRangeId == ipRangeId);
-            WideIpRange(ipRangeId, false);
+            WideIpRange(ipRangeId);
+        }
+        // Delete the IPRange and its subnets
+        public void DeleteIpRange(IPRange ipRange)
+        {
+            if (ipRange == null)
+                return;
 
+            Subnets.RemoveAll(s => s.IPRangeId == ipRange.Id);
+            IPRanges.Remove(ipRange);
             NotifySubnetChange();
         }
     }

@@ -1,6 +1,6 @@
 ﻿<Button Type="primary" Icon="plus-circle" OnClick="@AddSubnetClick">Add Subnet</Button>
 <p />
-<Table @ref="subnetTable" TItem="Subnet" DataSource="@_vnet.Subnets" HidePagination="true">
+<Table TItem="Subnet" DataSource="@_vnet.Subnets" HidePagination="true">
     <Column @bind-Field="@context.Name" />
     <Column Title="Azure Resource" Field="@context.ServiceName">
         @if(context.ServiceName == "Other")
@@ -18,7 +18,7 @@
     <Column Title="Available Count" Field="@context.AvailableCount" />
     <ActionColumn>
         <Tooltip Title="@("Delete subnet")">
-            <Button Icon="delete" Shape="circle" Danger
+            <Button Icon="delete" Shape="circle"
                     OnClick="async (e) => {
                                  await Task.Delay(50); // Temp workaround for unexpected exception thrown
                                  _vnet.DeleteSubnet(context);

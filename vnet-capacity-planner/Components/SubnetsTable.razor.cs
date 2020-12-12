@@ -1,7 +1,6 @@
 ﻿using AntDesign;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System;
 using System.Net;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -14,7 +13,6 @@ namespace vnet_capacity_planner.Components
         bool modalVisible = false;
         Form<Subnet> subnetForm;
         Subnet subnet = null;
-        Table<Subnet> subnetTable;
         bool startIpError = false;
         string errorMessage = string.Empty;
 
@@ -30,7 +28,7 @@ namespace vnet_capacity_planner.Components
 
         public void Dispose() => _vnet.OnSubnetChange -= SubnetHasChanged;
 
-        private void SubnetHasChanged() => subnetTable.ReloadData();
+        private void SubnetHasChanged() => StateHasChanged();
 
         private void HandleOnSelectedItemChanged(ServiceSpec selectedService)
         {
@@ -102,6 +100,8 @@ namespace vnet_capacity_planner.Components
 
         private void AddSubnetClick()
         {
+            startIpError = false;
+            errorMessage = string.Empty;
             subnet = new Subnet
             {
                 ServiceName = string.Empty,
@@ -126,7 +126,7 @@ namespace vnet_capacity_planner.Components
         private async Task CloseModal()
         {
             modalVisible = false;
-            await Task.Delay(50);
+            await Task.Delay(50); // Handle scrolling issue.
             subnet = null;
         }
     }

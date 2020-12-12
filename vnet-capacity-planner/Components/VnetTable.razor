@@ -16,11 +16,10 @@
     <Column Title="Availlable Count" Field="@(GetAvailableCount(context))"></Column>
     <ActionColumn>
         <Tooltip Title="@("Delete address range")">
-            <Button Icon="delete" Shape="circle" Danger Disabled="@(_vnet.IPRanges.Count <= 1)"
-                    OnClick="@(async (e) => {
-                                   await Task.Delay(50); // Temp workaround for unexpected exception thrown
-                                   _vnet.ResetSubnets(context.Id);
-                                   _vnet.IPRanges.Remove(context);
+            <Button Icon="delete" Shape="circle" Disabled="@(_vnet.IPRanges.Count <= 1)"
+                    OnClick="@( e => {
+                                    // TODO: an exception is thown when deleting the last element.
+                                    _vnet.DeleteIpRange(context);
                                })" />
         </Tooltip>
     </ActionColumn>
