@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Net;
 using System.Numerics;
+using System.Threading.Tasks;
 using vnet_capacity_planner.Models;
 
 namespace vnet_capacity_planner.Components
@@ -110,20 +111,22 @@ namespace vnet_capacity_planner.Components
             modalVisible = true;
         }
 
-        private void HandleOk(MouseEventArgs e)
+        private async Task HandleOk(MouseEventArgs e)
         {
             if (!subnetForm.Validate())
                 return;
 
             _vnet.AddSubnet(subnet.Clone());
 
-            modalVisible = false;
-            subnet = null;
+            await CloseModal();
         }
 
-        private void HandleCancel(MouseEventArgs e)
+        private async Task HandleCancel(MouseEventArgs e) => await CloseModal();
+
+        private async Task CloseModal()
         {
             modalVisible = false;
+            await Task.Delay(50);
             subnet = null;
         }
     }

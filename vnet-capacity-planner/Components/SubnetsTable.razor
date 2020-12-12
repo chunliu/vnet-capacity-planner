@@ -33,7 +33,8 @@
 }
 else
 {
-    <Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" OkButtonProps="@(new ButtonProps { Disabled = subnet.Service == null || startIpError })">
+    <Modal Title="@("Add a subnet")" Visible="@modalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel" 
+           OkButtonProps="@(new ButtonProps { Disabled = subnet.Service == null || startIpError })">
         <Form @ref="@subnetForm" Model="@subnet" LabelCol="new ColLayoutParam { Span = 7 }" WrapperCol="new ColLayoutParam { Span = 17}">
             <ValidationSummary />
             <FormItem Label="Azure Resource">
