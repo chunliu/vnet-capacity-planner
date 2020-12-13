@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Check env
-      run: echo "$GITHUB_RUN_ID, $GITHUB_RUN_NUMBER"
+      run: echo "$GITHUB_RUN_ID, $GITHUB_RUN_NUMBER, $GITHUB_EVENT_NAME, $GITHUB_REF"
