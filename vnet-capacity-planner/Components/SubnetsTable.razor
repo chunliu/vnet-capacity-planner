@@ -17,7 +17,7 @@
     <Column Title="Address Count" Field="@context.AddressCount" />
     <Column Title="Available Count" Field="@context.AvailableCount" />
     <ActionColumn>
-        <Tooltip Title="@("Delete subnet")">
+        <Tooltip Title="@("Delete the subnet")">
             <Button Icon="delete" Shape="circle"
                     OnClick="async (e) => {
                                  await Task.Delay(50); // Temp workaround for unexpected exception thrown

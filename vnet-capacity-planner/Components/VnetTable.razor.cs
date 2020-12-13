@@ -124,5 +124,30 @@ namespace vnet_capacity_planner.Components
 
             return total;
         }
+
+        private async Task DeleteIPRange(IPRange ipRange)
+        {
+            var subnets = _vnet.Subnets.Where(s => s.IPRangeId == ipRange.Id).ToList();
+            if (subnets?.Count > 0)
+            {
+                var content = "Delete the address range will remove all relative subnets!";
+                var title = "Warning";
+                var confirmResult = await _confirmService.Show(content, title, ConfirmButtons.OKCancel, ConfirmIcon.Warning,
+                    new ConfirmButtonOptions()
+                    {
+                        Button1Props = new ButtonProps()
+                        {
+                            Type = "primary",
+                            Danger = true
+                        }
+                    });
+                if (confirmResult == ConfirmResult.Cancel)
+                {
+                    return;
+                }
+            }
+            // TODO: an exception is thown when deleting the last element.
+            _vnet.DeleteIpRange(ipRange);
+        }
     }
 }

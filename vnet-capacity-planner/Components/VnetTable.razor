@@ -15,16 +15,13 @@
     <Column Title="Address Count" Field="@context.AddressCount" />
     <Column Title="Availlable Count" Field="@(GetAvailableCount(context))"></Column>
     <ActionColumn>
-        <Tooltip Title="@("Delete address range")">
+        <Tooltip Title="@("Delete the address range")">
             <Button Icon="delete" Shape="circle" Disabled="@(_vnet.IPRanges.Count <= 1)"
-                    OnClick="@( e => {
-                                    // TODO: an exception is thown when deleting the last element.
-                                    _vnet.DeleteIpRange(context);
-                               })" />
+                    OnClick="@( async e => { await DeleteIPRange(context); })" />
         </Tooltip>
     </ActionColumn>
 </Table>
 <p />
-<Tooltip Title="@("Add address range")">
+<Tooltip Title="@("Add an address space")">
     <Button Shape="circle" Icon="plus" OnClick="() => { _vnet.AddIpRange(); }" />
 </Tooltip>

@@ -4,6 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <VersionPrefix>0.2.28</VersionPrefix>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.5.0-nightly-2012101444" />
     <PackageReference Include="BlazorApplicationInsights" Version="0.7.1" />
@@ -12,12 +15,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.1" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\data\services.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>
