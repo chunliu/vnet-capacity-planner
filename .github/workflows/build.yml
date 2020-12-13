@@ -3,6 +3,8 @@ name: CI Build
 on:
   push:
     branches: [ master ]
+    tags: 
+      - '*'
   pull_request:
     branches: [ master ]
 
@@ -23,3 +25,9 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Check env
       run: echo "$GITHUB_RUN_ID, $GITHUB_RUN_NUMBER, $GITHUB_EVENT_NAME, $GITHUB_REF"
+      
+  Deploy:
+    if: github.event_name == 'push' && startWith(github.ref, 'refs/tags')
+      steps:
+        - name: Condition is true
+          run: echo "$GITHUB_RUN_ID, $GITHUB_RUN_NUMBER, $GITHUB_EVENT_NAME, $GITHUB_REF"
