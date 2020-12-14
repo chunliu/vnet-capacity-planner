@@ -2,12 +2,16 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components;
 using vnet_capacity_planner.Models;
 using AntDesign;
 using System.Linq;
+using vnet_capacity_planner.Models.ARM;
+using System.Text.Encodings.Web;
 
 namespace vnet_capacity_planner.Pages
 {
@@ -21,6 +25,27 @@ namespace vnet_capacity_planner.Pages
         ILogger<Index> _logger { get; set; }
         [Inject]
         IBlazorDownloadFileService _dldFile { get; set; }
+
+        private async Task ClickExportArm(MouseEventArgs e)
+        {
+            VnetTemplate template = new VnetTemplate();
+            foreach(var ir in _vnet.IPRanges)
+            {
+                template.AddAddressPrefix(ir.AddressSpace);
+            }
+            foreach(var subnet in _vnet.Subnets)
+            {
+                template.AddSubnet(subnet.Name, subnet.AddressSpace);
+            }
+
+            var armString = JsonSerializer.Serialize(template.ArmTemplate, 
+                new(JsonSerializerDefaults.Web)
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true
+                });
+            await GenerateDownload("vnet-planner.json", armString);
+        }
 
         private async Task ClickExportCSV(MouseEventArgs e)
         {
@@ -40,11 +65,16 @@ namespace vnet_capacity_planner.Pages
                 }
             }
 
-            // Download the file
-            var csvBytes = Encoding.UTF8.GetBytes(csvBuilder.ToString());
-            var csvB64 = Convert.ToBase64String(csvBytes);
+            await GenerateDownload("vnet-planner.csv", csvBuilder.ToString());
+        }
 
-            var result = await _dldFile.DownloadFile("vnet.csv", csvB64, "application/octet-stream");
+        private async Task GenerateDownload(string filename, string content)
+        {
+            // Download the file
+            var dlBytes = Encoding.UTF8.GetBytes(content);
+            var dlB64 = Convert.ToBase64String(dlBytes);
+
+            var result = await _dldFile.DownloadFile(filename, dlB64, "application/octet-stream");
             if (!result.Succeeded)
             {
                 _logger.LogError("Download file error", result.ErrorName, result.ErrorMessage);
