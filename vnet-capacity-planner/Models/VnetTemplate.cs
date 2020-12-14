@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace vnet_capacity_planner.Models
 {
@@ -33,7 +30,7 @@ namespace vnet_capacity_planner.Models
                 { "vnetPlanner_location", param2 }
             });
 
-            template.Add("variabels", new Dictionary<string, dynamic>());
+            template.Add("variables", new Dictionary<string, dynamic>());
 
             Dictionary<string, List<string>> addressSpace = new Dictionary<string, List<string>>
             {
@@ -53,8 +50,11 @@ namespace vnet_capacity_planner.Models
                 { "location", "[parameters('vnetPlanner_location')]" },
                 { "properties", properties }
             };
-
-            template.Add("resources", vnetResource);
+            var resources = new List<Dictionary<string, dynamic>>
+            {
+                vnetResource
+            };
+            template.Add("resources", resources);
         }
 
         public Dictionary<string, dynamic> ArmTemplate
