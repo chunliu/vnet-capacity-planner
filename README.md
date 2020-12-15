@@ -4,9 +4,12 @@ This is a small app which can help you plan the capacity (address space) of an A
 
 ![Vnet Planner](vnetplanner.png)
 
-## Limits
+## Features
 
-Currently the app only works for **IPv4** and **single address space**. 
+- Calculate the subnet size for specific Azure resources.
+- Calculate the address space based on all subnets in it.
+- Support multiple address spaces.
+- Export the result as the ARM template or the csv file.
 
 ## Libraries
 
