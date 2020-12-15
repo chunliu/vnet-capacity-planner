@@ -1,5 +1,7 @@
 # Azure Virtual Network Capacity Planner
 
+![CI/CD](https://github.com/chunliu/vnet-capacity-planner/workflows/CI/CD/badge.svg)
+
 This is a small app which can help you plan the capacity (address space) of an Azure virtual network based on the Azure resources that you need to integrate with the virtual network. 
 
 ![Vnet Planner](vnetplanner.png)
