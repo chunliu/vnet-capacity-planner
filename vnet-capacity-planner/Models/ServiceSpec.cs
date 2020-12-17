@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 
-namespace vnet_capacity_planner.Models
+namespace VnetCapacityPlanner.Models
 {
     public class ServiceSpec
     {

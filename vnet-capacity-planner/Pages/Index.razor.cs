@@ -6,12 +6,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components;
-using vnet_capacity_planner.Models;
+using VnetCapacityPlanner.Models;
 using AntDesign;
 using System.Linq;
 using System.Text.Encodings.Web;
 
-namespace vnet_capacity_planner.Pages
+namespace VnetCapacityPlanner.Pages
 {
     public partial class Index
     {

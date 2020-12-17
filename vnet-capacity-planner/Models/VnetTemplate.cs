@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace vnet_capacity_planner.Models
+namespace VnetCapacityPlanner.Models
 {
     public class VnetTemplate
     {

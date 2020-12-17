@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace vnet_capacity_planner.Models
+namespace VnetCapacityPlanner.Models
 {
     public class IPRange
     {

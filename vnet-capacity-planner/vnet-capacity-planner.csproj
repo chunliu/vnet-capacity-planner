@@ -6,6 +6,7 @@
 
   <PropertyGroup>
     <VersionPrefix>0.3.2</VersionPrefix>
+    <RootNamespace>VnetCapacityPlanner</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.5.0-nightly-2012101444" />

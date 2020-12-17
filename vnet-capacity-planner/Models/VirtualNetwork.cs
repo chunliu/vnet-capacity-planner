@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace vnet_capacity_planner.Models
+namespace VnetCapacityPlanner.Models
 {
     public class VirtualNetwork
     {

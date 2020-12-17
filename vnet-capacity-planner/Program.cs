@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using vnet_capacity_planner.Models;
+using VnetCapacityPlanner.Models;
 
-namespace vnet_capacity_planner
+namespace VnetCapacityPlanner
 {
     public class Program
     {

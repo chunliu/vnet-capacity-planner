@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using vnet_capacity_planner.Models;
+using VnetCapacityPlanner.Models;
 
-namespace vnet_capacity_planner.Components
+namespace VnetCapacityPlanner.Components
 {
     public partial class VnetTable
     {

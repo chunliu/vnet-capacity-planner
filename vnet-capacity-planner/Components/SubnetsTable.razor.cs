@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Components.Web;
 using System.Net;
 using System.Numerics;
 using System.Threading.Tasks;
-using vnet_capacity_planner.Models;
+using VnetCapacityPlanner.Models;
 
-namespace vnet_capacity_planner.Components
+namespace VnetCapacityPlanner.Components
 {
     public partial class SubnetsTable
     {

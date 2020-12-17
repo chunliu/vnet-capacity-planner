@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
-namespace vnet_capacity_planner.Models
+namespace VnetCapacityPlanner.Models
 {
     public class Subnet : IValidatableObject
     {
