@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vnet-capacity-planner", "vnet-capacity-planner\vnet-capacity-planner.csproj", "{D8CF6729-F9D0-47B6-A770-9291B278277E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VnetCapacityPlanner", "VnetCapacityPlanner\VnetCapacityPlanner.csproj", "{D8CF6729-F9D0-47B6-A770-9291B278277E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
