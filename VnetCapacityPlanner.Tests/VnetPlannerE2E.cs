@@ -18,7 +18,7 @@ namespace VnetCapacityPlanner.Tests
                 .AddJsonFile("testsettings.local.json", true)
                 .Build();
 
-            var root = Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\");
+            var root = Path.Combine(AppContext.BaseDirectory, "../../../../");
             var location = Path.GetFullPath(Path.Combine(root, config["contentRoot"]));
 
             _server = server;
