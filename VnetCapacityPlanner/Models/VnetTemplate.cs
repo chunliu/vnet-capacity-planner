@@ -11,7 +11,7 @@ namespace VnetCapacityPlanner.Models
 
         public VnetTemplate()
         {
-            template.Add("$schema", "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#");
+            template.Add("$schema", "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#");
             template.Add("contentVersion", "1.0.0.0");
 
             var param1 = new Dictionary<string, string>
@@ -45,7 +45,7 @@ namespace VnetCapacityPlanner.Models
             var vnetResource = new Dictionary<string, dynamic>
             {
                 { "type", "Microsoft.Network/virtualNetworks" },
-                { "apiVersion", "2020-05-01" },
+                { "apiVersion", "2020-07-01" },
                 { "name", "[parameters('vnetPlanner_vnetName')]" },
                 { "location", "[parameters('vnetPlanner_location')]" },
                 { "properties", properties }
