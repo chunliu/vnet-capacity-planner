@@ -30,13 +30,8 @@
   {
     "name": "Application Gateway v2",
     "fixedSubnetName": false,
-    "subnetName": "",
-    "fixedSubnetCidr": false,
-    "subnetCidr": 0,
-    "minInstances": 1,
-    "maxInstances": 125,
-    "ipPerInstance": 1,
-    "additionalIps": 1,
+    "fixedSubnetCidr": true,
+    "subnetCidr": 24,
     "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/application-gateway\/configuration-infrastructure#size-of-the-subnet"
   },
   {
