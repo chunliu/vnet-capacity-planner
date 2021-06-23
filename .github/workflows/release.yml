@@ -23,8 +23,11 @@ jobs:
     - name: Publish
       run: dotnet publish --configuration Release --no-restore --version-suffix $GITHUB_RUN_NUMBER --output build
     - name: Test
+      working-directory: ./VnetCapacityPlanner.Tests
       run: | 
         dotnet tool install --global Microsoft.Playwright.CLI
+        dotnet restore
+        dotnet build
         playwright install
         dotnet test
 
