@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionPrefix>0.3.4</VersionPrefix>
+    <VersionPrefix>0.3.5</VersionPrefix>
     <RootNamespace>VnetCapacityPlanner</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
