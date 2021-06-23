@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using PlaywrightSharp;
+using Microsoft.Playwright;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -31,9 +31,9 @@ namespace VnetCapacityPlanner.Tests
             using var playwright = await Playwright.CreateAsync();
             await using var browser = await playwright.Chromium.LaunchAsync();
             var page = await browser.NewPageAsync();
-            await page.GoToAsync(_server.RootUri.AbsoluteUri);
+            await page.GotoAsync(_server.RootUri.AbsoluteUri);
             var header = await page.WaitForSelectorAsync(".site-title");
-            Assert.Equal("Azure Virtual Network Capacity Planner", await header.GetTextContentAsync());
+            Assert.Equal("Azure Virtual Network Capacity Planner", await header.TextContentAsync());
         }
 
         [Fact]
@@ -41,13 +41,13 @@ namespace VnetCapacityPlanner.Tests
         {
             using var playwright = await Playwright.CreateAsync();
             await using var browser = await playwright.Chromium.LaunchAsync();
-            //await using var browser = await playwright.Chromium.LaunchAsync(new LaunchOptions
+            //await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             //{
             //    Headless = false,
             //    SlowMo = 250,
             //});
             var page = await browser.NewPageAsync();
-            await page.GoToAsync(_server.RootUri.AbsoluteUri);
+            await page.GotoAsync(_server.RootUri.AbsoluteUri);
             // Click text="Add Subnet"
             await page.ClickAsync("text=\"Add Subnet\"");
 
@@ -67,9 +67,8 @@ namespace VnetCapacityPlanner.Tests
             await page.ClickAsync("text=\"OK\"");
 
             // Search text="10.0.0.0/27"
-            var addressSpace = await page.WaitForSelectorAsync("//table[1]/tbody/tr[@data-row-id='1']/td[2]");
-            var result = await addressSpace.GetTextContentAsync();
-            Assert.Equal("10.0.0.0/27", result);
+            var addressSpace = await page.TextContentAsync("//table[1]/tbody/tr[@data-row-key='0']/td[2]");
+            Assert.Equal("10.0.0.0/27", addressSpace);
         }
     }
 }

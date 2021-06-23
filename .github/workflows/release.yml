@@ -23,7 +23,10 @@ jobs:
     - name: Publish
       run: dotnet publish --configuration Release --no-restore --version-suffix $GITHUB_RUN_NUMBER --output build
     - name: Test
-      run: dotnet test
+      run: | 
+        dotnet tool install --global Microsoft.Playwright.CLI
+        playwright install
+        dotnet test
 
   release:
     if: startsWith(github.ref, 'refs/tags')
