@@ -1,6 +1,6 @@
 ﻿@if (ipRangeOverlap)
 {
-    <Alert Type="@AlertType.Error" Message="Address ranges overlap with each other." ShowIcon />
+    <Alert Type="@AlertType.Error" Message="Address ranges overlap with each other." ShowIcon=true />
 }
 <Table TItem="IPRange" DataSource="@_vnet.IPRanges" HidePagination="true">
     <Column Title="Network IP" Field="@context.StartIpHolder">

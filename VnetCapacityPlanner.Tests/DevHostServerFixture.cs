@@ -38,8 +38,6 @@ namespace VnetCapacityPlanner.Tests
 
         protected IHost CreateWebHost()
         {
-            // ContentRoot = "C:\\Users\\chunliu\\source\\repos\\vnet-capacity-planner\\VnetCapacityPlanner\\bin\\Release\\net5.0\\browser-wasm\\publish";
-
             var host = "127.0.0.1";
 
             var args = new List<string>
