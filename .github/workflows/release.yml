@@ -2,22 +2,22 @@ name: CI/CD
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     tags: 
       - 'v*'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100
+        dotnet-version: 6.0.202
     - name: Install dependencies
       run: dotnet restore
     - name: Publish
@@ -40,7 +40,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100
+        dotnet-version: 6.0.202
     - name: Install dependencies
       run: dotnet restore
     - name: Publish
