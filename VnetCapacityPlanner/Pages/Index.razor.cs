@@ -36,12 +36,13 @@ namespace VnetCapacityPlanner.Pages
                 template.AddSubnet(subnet.Name, subnet.AddressSpace);
             }
 
-            var armString = JsonSerializer.Serialize(template.ArmTemplate, 
-                new(JsonSerializerDefaults.Web)
-                {
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                    WriteIndented = true
-                });
+            //var armString = JsonSerializer.Serialize(template.ArmTemplate, 
+            //    new JsonSerializerOptions(JsonSerializerDefaults.Web)
+            //    {
+            //        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            //        WriteIndented = true
+            //    });
+            var armString = template.GenerateArmTemplate();
             await GenerateDownload("vnet-planner.json", armString);
         }
 

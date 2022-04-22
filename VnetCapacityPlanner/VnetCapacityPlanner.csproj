@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionPrefix>0.3.4</VersionPrefix>
+    <VersionPrefix>0.4.0</VersionPrefix>
     <RootNamespace>VnetCapacityPlanner</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.8.2" />
-    <PackageReference Include="BlazorApplicationInsights" Version="1.1.2" />
-    <PackageReference Include="BlazorDownloadFile" Version="2.1.6" />
-    <PackageReference Include="IPNetwork2" Version="2.5.322" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.7" PrivateAssets="all" />
-    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+    <PackageReference Include="AzureDesignStudio.AzureResources.Network" Version="0.2.0" />
+    <PackageReference Include="BlazorApplicationInsights" Version="1.6.0" />
+    <PackageReference Include="BlazorDownloadFile" Version="2.3.1.1" />
+    <PackageReference Include="IPNetwork2" Version="2.5.407" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.4" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
