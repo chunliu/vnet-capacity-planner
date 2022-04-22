@@ -2,14 +2,12 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components;
 using VnetCapacityPlanner.Models;
 using AntDesign;
 using System.Linq;
-using System.Text.Encodings.Web;
 
 namespace VnetCapacityPlanner.Pages
 {
@@ -36,12 +34,6 @@ namespace VnetCapacityPlanner.Pages
                 template.AddSubnet(subnet.Name, subnet.AddressSpace);
             }
 
-            //var armString = JsonSerializer.Serialize(template.ArmTemplate, 
-            //    new JsonSerializerOptions(JsonSerializerDefaults.Web)
-            //    {
-            //        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            //        WriteIndented = true
-            //    });
             var armString = template.GenerateArmTemplate();
             await GenerateDownload("vnet-planner.json", armString);
         }
@@ -50,7 +42,7 @@ namespace VnetCapacityPlanner.Pages
         {
             _logger.LogInformation("Export CSV");
             // Create CSV
-            StringBuilder csvBuilder = new StringBuilder("Type,Name,Resource,Address Space,Address Range,Address Count");
+            StringBuilder csvBuilder = new("Type,Name,Resource,Address Space,Address Range,Address Count");
             csvBuilder.AppendLine();
             foreach (var ipRange in _vnet.IPRanges)
             {
@@ -76,7 +68,7 @@ namespace VnetCapacityPlanner.Pages
             var result = await _dldFile.DownloadFile(filename, dlB64, "application/octet-stream");
             if (!result.Succeeded)
             {
-                _logger.LogError("Download file error", result.ErrorName, result.ErrorMessage);
+                _logger.LogError("Download file error: {ErrorName}, {ErrorMessage}", result.ErrorName, result.ErrorMessage);
                 Console.WriteLine($"{result.ErrorName}, {result.ErrorMessage}");
             }
         }
