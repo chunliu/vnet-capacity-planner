@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionPrefix>0.4.1</VersionPrefix>
+    <VersionPrefix>0.4.2</VersionPrefix>
     <RootNamespace>VnetCapacityPlanner</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.8.2" />
-    <PackageReference Include="AzureDesignStudio.AzureResources.Network" Version="0.2.0" />
+    <PackageReference Include="AzureDesignStudio.AzureResources.Network" Version="0.2.2" />
     <PackageReference Include="BlazorApplicationInsights" Version="1.6.0" />
     <PackageReference Include="BlazorDownloadFile" Version="2.3.1.1" />
     <PackageReference Include="IPNetwork2" Version="2.5.407" />
