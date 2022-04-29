@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using VnetCapacityPlanner.Models;
 using AntDesign;
 using System.Linq;
+using VnetCapacityPlanner.Utils;
 
 namespace VnetCapacityPlanner.Pages
 {
@@ -22,20 +23,37 @@ namespace VnetCapacityPlanner.Pages
         [Inject]
         IBlazorDownloadFileService _dldFile { get; set; }
 
-        private async Task ClickExportArm(MouseEventArgs e)
+        private string GenerateArmJson()
         {
-            VnetTemplate template = new VnetTemplate();
-            foreach(var ir in _vnet.IPRanges)
+            VnetTemplate template = new();
+            foreach (var ir in _vnet.IPRanges)
             {
                 template.AddAddressPrefix(ir.AddressSpace);
             }
-            foreach(var subnet in _vnet.Subnets)
+            foreach (var subnet in _vnet.Subnets)
             {
                 template.AddSubnet(subnet.Name, subnet.AddressSpace);
             }
 
-            var armString = template.GenerateArmTemplate();
+            return template.GenerateArmTemplate();
+        }
+        private async Task ClickExportArm(MouseEventArgs e)
+        {
+            var armString = GenerateArmJson();
+
             await GenerateDownload("vnet-planner.json", armString);
+        }
+        private async Task ClickExportBicep(MouseEventArgs e)
+        {
+            var armString = GenerateArmJson();
+            var bicep = await BicepDecompiler.Decompile(armString);
+            if (!string.IsNullOrEmpty(bicep.Error))
+            {
+                await _message.Error(bicep.Error);
+                return;
+            }
+
+            await GenerateDownload("vnet-planner.bicep", bicep.BicepFile);
         }
 
         private async Task ClickExportCSV(MouseEventArgs e)
