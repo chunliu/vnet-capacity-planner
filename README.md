@@ -11,7 +11,7 @@ This is a small app which can help you plan the capacity (address space) of an A
 - Calculate the subnet size for specific Azure resources.
 - Calculate the address space based on all subnets in it.
 - Support multiple address spaces.
-- Export the result as the ARM template or the csv file.
+- Export the result as ARM template, Bicep or csv file.
 
 ## Libraries
 
