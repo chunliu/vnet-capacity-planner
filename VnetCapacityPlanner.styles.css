@@ -1,0 +1,22 @@
+/* /Shared/MainLayout.razor.rz.scp.css */
+.site-title[b-sg7imx0i09] {
+    color: #fff;
+    font-size: large;
+    font-weight: bold;
+    float: left;
+}
+
+.site-content[b-sg7imx0i09] {
+    background: #fff;
+    padding: 24px;
+    margin: 32px 0 0;
+    min-height: 280px;
+}
+
+[b-sg7imx0i09] .site-header {
+    background: #484644;
+}
+
+[b-sg7imx0i09] .feedback-btn {
+    float: right;
+}
