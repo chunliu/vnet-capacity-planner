@@ -4,8 +4,8 @@
     "fixedSubnetName": true,
     "subnetName": "AzureBastionSubnet",
     "fixedSubnetCidr": true,
-    "subnetCidr": 27,
-    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/bastion\/tutorial-create-host-portal#createhost"
+    "subnetCidr": 26,
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/bastion\/tutorial-create-host-portal#values"
   },
   {
     "name": "Azure Firewall",
@@ -25,7 +25,7 @@
     "maxInstances": 12,
     "ipPerInstance": 2,
     "additionalIps": 1,
-    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/api-management\/api-management-using-with-vnet#--subnet-size-requirement"
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/api-management\/virtual-network-concepts?tabs=stv2#subnet-size"
   },
   {
     "name": "Application Gateway v2",
@@ -39,7 +39,7 @@
     "fixedSubnetName": false,
     "fixedSubnetCidr": true,
     "subnetCidr": 24,
-    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/app-service\/environment\/network-info#ase-subnet-size"
+    "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/app-service\/environment\/network-info#subnet-size"
   },
   {
     "name": "Virtual Network Gateway",
