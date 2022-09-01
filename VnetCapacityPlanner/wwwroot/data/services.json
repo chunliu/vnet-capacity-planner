@@ -22,7 +22,7 @@
     "fixedSubnetCidr": false,
     "subnetCidr": 0,
     "minInstances": 1,
-    "maxInstances": 10,
+    "maxInstances": 12,
     "ipPerInstance": 2,
     "additionalIps": 1,
     "refUrl": "https:\/\/docs.microsoft.com\/en-us\/azure\/api-management\/api-management-using-with-vnet#--subnet-size-requirement"
